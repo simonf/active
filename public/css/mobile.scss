@@ -1,0 +1,148 @@
+	$bright-orange: #FF9500;
+	$light-orange: #ffc573;
+	$dark-brown: #a66100;
+	$palegrey: #aaa;
+
+	body {
+		background-color: $palegrey;
+	}
+
+	a {
+		color: $bright-orange;
+	}
+
+	div#content {
+		font-family: Verdana, Geneva, sans-serif;
+		font-size: 16px;
+		line-height: 24px;
+		// background-color: #FFF;
+		color: #000;
+		margin: 10px;
+	}
+
+	// form#new-item-form {
+	// 	background-image: url("../img/tarmac.png");
+	// 	background-repeat: repeat;
+	// }
+	// 
+	header {
+		background-image: url("../img/desert1a.png");
+		height: 50px;
+
+	 	h1 {
+			font-family: Times New Roman, serif;
+			font-size: 36px;
+			line-height: 50px;
+			color: $dark-brown;
+			display: inline;
+			margin-left: 0.5em;
+		}
+	}
+
+
+	label {
+		display: inline-block;
+		width: 80px;
+		text-align: right;
+		border: 0;
+		padding: 0;
+		margin: 0;
+		margin-right: 4px;
+	}
+
+	#action-in {
+		width: 70%;
+	}
+
+	#category-in {
+		width: 60%;
+	}
+
+	#quantity-in {
+		width: 5em;
+	}
+
+	#units-in {
+		width: 10em;
+	}
+
+	div#list-table {
+		border: 0;
+		padding: 0;
+		margin-right: 0;
+		margin-bottom: 0;
+		margin-top: 1em;
+	}
+
+	.item-delete {
+		width: 12px;
+		height: 12px;
+	}
+	
+	img#del-img {
+		width: 8px;
+		height: 8px;
+	}
+
+	.inner-row {
+		line-height: 16px;
+	}
+	
+	.th-bg {
+		font-size: 12px;
+		line-height: 16px;
+	}
+
+	.tb-bg {
+		font-size: 10px;
+		line-height: 12px;
+		min-height: 12px;
+		white-space: nowrap;
+		overflow: hidden;
+	}
+
+	.padded-float {
+		margin: 0;
+		padding-left: 4px;
+		padding-bottom: 2px;
+		float: left; 
+	}
+
+	.col_activity { 
+		@extend .padded-float;
+		width: 40%;
+	} 
+
+	.col_category { 
+		@extend .padded-float;
+		width: 25%; 
+	} 
+	.col_quantity { 
+		@extend .padded-float;
+		width: 12%;
+	} 
+	.col_timestamp { 
+		@extend .padded-float;
+		width: 13%;
+	} 
+
+	#td-quantity-edit { 
+		@extend .padded-float;
+		width: 5%;
+	}
+
+	#td-units-edit { 
+		@extend .padded-float;
+		width: 5%;
+	}
+
+	.update-on-enter {
+		width: 100%;
+	}
+
+	.col_buttons { 
+		@extend .padded-float;
+		line-height: 10px;
+		width: 6%; 
+		background-color: $palegrey;
+	}
