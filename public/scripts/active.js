@@ -158,6 +158,7 @@
 	
 	actionMatcher: new ListOfValues(),
 	categoryMatcher: new ListOfValues(),
+	doubleMatcher: new DoubleMatcher(),
 	
 	render: function() {
 		// for each element in models, call the appendItem function and pass this as the context object 
@@ -170,6 +171,11 @@
 		}, this);
 				
 		// also at page load, we extract a list of values for categories and actions
+		this.doubleMatcher.makeMatches(this.collection.models,'action','category');
+		$('#action-in').blur(function() {
+			listView.doubleMatcher.match($('#action-in'), $('#category-in'));
+		});
+
 		this.categoryMatcher.makeMatches(this.collection.models,'category');
 		$('#category-in').autocomplete('option','source',this.categoryMatcher.values);
 

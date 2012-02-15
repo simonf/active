@@ -83,8 +83,12 @@ label {
     color: #a66100; }
 
 a#nxt-page {
+  color: black;
   display: inline-block;
   float: right; }
+
+a#pre-page {
+  color: black; }
 
 div#list-table {
   border: 0;
@@ -112,12 +116,11 @@ div.activity-row {
 
 .tb-bg {
   font-size: 14px;
-  display: block;
   min-height: 24px; }
 
-div#table-body :nth-of-type(odd) {
-  background-color: #ffffff; }
-div#table-body :nth-of-type(even) {
+div.inner-row :nth-child(odd) {
+  background-color: #fff; }
+div.inner-row :nth-child(even) {
   background-color: #aaaaaa; }
 
 .padded-float, .col_activity, .col_category, .col_quantity, .col_timestamp, #td-quantity-edit, #td-units-edit, .col_buttons {

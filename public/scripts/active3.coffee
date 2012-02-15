@@ -65,7 +65,7 @@
 
 	List = Backbone.Model.extend {
 		model: Item,
-		url: '/activities',
+		url: '/activities?limit=25',
 		parse: (response) ->
 			retval = _(response).map((row) ->
 				{
@@ -76,9 +76,53 @@
 					updatedAt: row.value.updatedAt
 				}
 			)
+			// parse the start key and the last key from the response
+			this.pageInfo.pageStartKeys[this.pageInfo.tgtPage] = response[0].key
+			this.pageInfo.pageStartKeys[this.pageInfo.tgtPage+1] = response[response.length-1].key
+			
 			return retval
-	}
-	
+		,
+		pageInfo: {
+			rowsPerPage: 25,
+			currentPageNum: 0,
+			pageStartKeys: [],
+			tgtPage: 0
+		},
+		doRender: ->
+			this.pageInfo.currentPageNum = this.pageInfo.tgtPage;
+			retur
+		,
+		getNextPage: (view) ->
+			pn = this.pageInfo.currentPageNum
+			psk = this.pageInfo.pageStartKeys
+			if(psk.length > pn + 1) 
+				this.url='/activities?limit='+this.pageInfo.rowsPerPage+'&startkey='+psk[pn+1]
+			else 
+				this.url='/activities?limit='+this.pageInfo.rowsPerPage
+			this.pageInfo.tgtPage = pn+1
+			this.fetch({ 
+				success: ->
+			# 		listCollection.reset()
+					listCollection.doRender()
+					listCollection.trigger('draw')
+				})
+		,
+		getPrevPage: (view) ->
+			pn = this.pageInfo.currentPageNum
+			psk = this.pageInfo.pageStartKeys
+			if(pn > 0) 
+				this.url='/activities?limit='+this.pageInfo.rowsPerPage+'&startkey='+psk[pn-1]
+			else 
+				this.url='/activities?limit='+this.pageInfo.rowsPerPage
+			this.pageInfo.tgtPage = pn -1
+			this.fetch({ 
+				success: ->
+					# listCollection.reset();
+					listCollection.doRender();
+					listCollection.trigger('draw');
+				}
+			)
+
 	ListView = Backbone.Collection.extend {
 		el: $('#main'),
 		appendItem : (item) ->
@@ -88,16 +132,43 @@
 			$('#table-body',this.el).append(itemView.render().el)
 			return
 		,
+		prependItem: (item) ->
+			itemView = new ItemView {
+				model: item
+			}
+			// the second (context) parameter in the jQuery selector call has to be a node 
+			// (set in the el: assignment, above), NOT just a selector string
+			$('#table-body', this.el).prepend(itemView.render().el)
+		,
+		actionMatcher: new ListOfValues(),
+		categoryMatcher: new ListOfValues(),
+		doubleMatcher: new DoubleMatcher(),
+		
 		render: -> 
 			_(this.collection.models).each((item) ->
 				this.appendItem item
 			,this)
+			
+			this.doubleMatcher.makeMatches(this.collection.models,'action','category')
+			$('#action-in').blur( ->
+				listView.doubleMatcher.match($('#action-in'), $('#category-in'))
+			)
+
+			this.categoryMatcher.makeMatches(this.collection.models,'category')
+			$('#category-in').autocomplete('option','source',this.categoryMatcher.values)
+
+			this.actionMatcher.makeMatches(this.collection.models,'action')
+			$('#action-in').autocomplete('option','source',this.actionMatcher.values)
+			
 			return
 		,
+		
 		initialize: ->
-			_.bindAll(this,'render', 'addItem', 'appendItem', 'updateItem')
+			_.bindAll(this,'render', 'addItem', 'appendItem', 'prependItem', 'updateItem')
 			this.collection = new List()
-			this.collection.bind 'add', this.appendItem
+			listCollection = this.collection
+			this.collection.bind 'add', this.prependItem
+			this.collection.bind 'draw', this.render
 			this.collection.fetch {
 				success: ->
 					listview.render()
@@ -152,15 +223,30 @@
 	}
 
 	listview = new ListView()
-	
+
+# jQuery on-document-ready stuff
+	$('#action-in').autocomplete({source: listView.actionMatcher.values})
+	$('#category-in').autocomplete({source: listView.categoryMatcher.values})
+# Navigation 
+	$('#pre-page').on('click', ->
+		listView.collection.getPrevPage()
+		return
+	)
+
+	$('#nxt-page').on('click', ->
+		listView.collection.getNextPage()
+		return
+	)
+
 	$('.submit-on-enter').on('keypress',(e) ->
 		if (!((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13))) 
 			return true
 		$('button.default-button').click()
 		$('#action-in').focus()
-		return false	
+		return false
 	)
-	
+
 	$('#action-in').focus()
-	return
+
+return
 )(jQuery)

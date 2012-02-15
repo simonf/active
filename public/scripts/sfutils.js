@@ -50,6 +50,27 @@ ListOfValues = function(){
 	};
 };
 
+DoubleMatcher = function(){
+	this.h = {};
+	this.makeMatches = function(coll,va1, va2) {
+		var that = this;
+		_.each(coll, function(it){
+			var v = $.trim(it.get(va2));
+			var k = $.trim(it.get(va1));
+			if(k && k.length >0) that.h[k]=v;
+		});
+	};
+	this.listAll = function() {
+		_.each(this.h, function(n) { console.log(n);});
+	};
+	this.match = function(srcInputElement, destInputElement){
+		var m,k,v;
+		k = $(srcInputElement).val();
+		if(k && k.length>0) v=this.h[k];
+		if(v && v.length>0) $(destInputElement).val(v);
+	}
+}
+
 
 // var tests=["    3.4   hours ", "1minute", "50.0secs  ", "    03:00:00","1"];
 // for(var i=0;i<tests.length;i++) {
