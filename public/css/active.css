@@ -96,7 +96,7 @@ div#list-table {
   margin-right: 0;
   margin-bottom: 0;
   margin-top: 1em;
-  margin-left: 85px; }
+  margin-left: 15px; }
 
 .item-delete {
   width: 16px;
@@ -118,18 +118,19 @@ div.activity-row {
   font-size: 14px;
   min-height: 24px; }
 
-div.inner-row :nth-child(odd) {
+div.inner-row:nth-child(odd) {
   background-color: #fff; }
-div.inner-row :nth-child(even) {
+
+div.inner-row:nth-child(even) {
   background-color: #aaaaaa; }
 
-.padded-float, .col_activity, .col_category, .col_quantity, .col_timestamp, #td-quantity-edit, #td-units-edit, .col_buttons {
+.padded-float, .col_activity, .col_category, .col_quantity, .col_timestamp, .col_buttons, #td-quantity-edit, #td-units-edit {
   margin: 0;
   padding-left: 4px;
-  float: left; }
+  display: inline-block; }
 
 .col_activity {
-  width: 40%; }
+  width: 35%; }
 
 .col_category {
   width: 25%; }
@@ -140,6 +141,9 @@ div.inner-row :nth-child(even) {
 .col_timestamp {
   width: 13%; }
 
+.col_buttons {
+  width: 4%; }
+
 #td-quantity-edit {
   width: 5%; }
 
@@ -148,7 +152,3 @@ div.inner-row :nth-child(even) {
 
 .update-on-enter {
   width: 100%; }
-
-.col_buttons {
-  width: 6%;
-  background-color: #aaaaaa; }
