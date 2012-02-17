@@ -29,14 +29,6 @@ header {
   header h2 {
     color: #fff; }
 
-img#logo {
-  display: inline;
-  width: 200px;
-  height: 80px;
-  margin-top: 10px;
-  margin-right: 10px;
-  float: right; }
-
 label {
   display: inline-block;
   width: 80px;
@@ -93,9 +85,9 @@ a#pre-page {
 div#list-table {
   border: 0;
   padding: 0;
-  margin-right: 0;
+  margin-right: 15px;
   margin-bottom: 0;
-  margin-top: 1em;
+  margin-top: 5px;
   margin-left: 15px; }
 
 .item-delete {
@@ -110,39 +102,40 @@ div.activity-row {
   width: 100%; }
 
 .th-bg {
-  background-image: url("../img/tarmac.png");
   font-size: 16px;
   line-height: 24px; }
 
 .tb-bg {
   font-size: 14px;
-  min-height: 24px; }
+  line-height: 24px; }
 
-div.inner-row:nth-child(odd) {
+div.inner-row:nth-child(odd) .tb-bg {
   background-color: #fff; }
 
-div.inner-row:nth-child(even) {
+div.inner-row:nth-child(even) .tb-bg {
   background-color: #aaaaaa; }
 
-.padded-float, .col_activity, .col_category, .col_quantity, .col_timestamp, .col_buttons, #td-quantity-edit, #td-units-edit {
+.padded-col, .col_activity, .col_category, .col_quantity, .col_timestamp, .col_buttons, #td-quantity-edit, #td-units-edit {
   margin: 0;
+  padding: 0;
+  border: 0;
   padding-left: 4px;
   display: inline-block; }
 
 .col_activity {
-  width: 35%; }
+  width: 37%; }
 
 .col_category {
   width: 25%; }
 
 .col_quantity {
-  width: 12%; }
-
-.col_timestamp {
   width: 13%; }
 
+.col_timestamp {
+  width: 125px; }
+
 .col_buttons {
-  width: 4%; }
+  width: 15px; }
 
 #td-quantity-edit {
   width: 5%; }

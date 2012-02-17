@@ -43,15 +43,6 @@
 		}
 	}
 
-	img#logo {
-		display: inline;
-		width: 200px;
-		height: 80px;
-		margin-top: 10px;
-		margin-right: 10px;
-		float: right;
-	}
-
 	label {
 		display: inline-block;
 		width: 80px;
@@ -119,9 +110,9 @@
 	div#list-table {
 		border: 0;
 		padding: 0;
-		margin-right: 0;
+		margin-right: 15px;
 		margin-bottom: 0;
-		margin-top: 1em;
+		margin-top: 5px;
 		margin-left: 15px;
 	}
 
@@ -140,60 +131,60 @@
 	}
 
 	.th-bg {
-		background-image: url("../img/tarmac.png");	
 		font-size: 16px;
 		line-height: 24px;
 	}
 
 	.tb-bg {
-		// background-image: url("../img/palebrownwall.png");
 		font-size: 14px;
-		min-height: 24px;
+		line-height: 24px;
 	}
 	
-	div.inner-row:nth-child(odd) {
+	div.inner-row:nth-child(odd) .tb-bg{
 		background-color: #fff;
 	}
-	div.inner-row:nth-child(even) {
+	div.inner-row:nth-child(even) .tb-bg{
 		background-color: $palegrey;
 	}
 
-	.padded-float {
+	.padded-col {
 		margin: 0;
+		padding: 0;
+		border: 0;
 		padding-left: 4px;
 		display: inline-block; 
 	}
 
 	.col_activity { 
-		@extend .padded-float;
-		width: 35%;
+		@extend .padded-col;
+		width: 37%;
 	} 
 
 	.col_category { 
-		@extend .padded-float;
+		@extend .padded-col;
 		width: 25%; 
 	} 
 	.col_quantity { 
-		@extend .padded-float;
-		width: 12%;
+		@extend .padded-col;
+		width: 13%;
 	} 
 	.col_timestamp { 
-		@extend .padded-float;
-		width: 13%;
+		@extend .padded-col;
+		width: 125px;
 	} 
 
 	.col_buttons { 
-		@extend .padded-float;
-		width: 4%; 
+		@extend .padded-col;
+		width: 15px;
 	}
 
 	#td-quantity-edit { 
-		@extend .padded-float;
+		@extend .padded-col;
 		width: 5%;
 	}
 
 	#td-units-edit { 
-		@extend .padded-float;
+		@extend .padded-col;
 		width: 5%;
 	}
 
