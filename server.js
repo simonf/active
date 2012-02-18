@@ -41,7 +41,7 @@ var createViews = function() {
 		      "map": "function(doc) { if (doc.type == 'activity')  emit(doc.action, doc) }"
 		    },
 		    "by_category": {
-		      "map": "function(doc) { if (doc.type == 'activity') emit(doc.category,{action: doc.action, date: new Date(parseInt(doc.updatedAt)), qty: doc.quantity, units: doc.units})}"
+		      "map": "function(doc) { if (doc.type == 'activity') emit(doc.category,{action: doc.action, date: parseInt(doc.updatedAt), qty: doc.quantity, units: doc.units})}"
 		    },
 		    "by_date": {
 		      "map": "function(doc) { if (doc.type == 'activity')  emit(doc.updatedAt, doc) }"
