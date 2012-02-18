@@ -41,7 +41,7 @@ var createViews = function() {
 		      "map": "function(doc) { if (doc.type == 'activity')  emit(doc.action, doc) }"
 		    },
 		    "by_category": {
-		      "map": "function(doc) { if (doc.type == 'activity')  emit(doc.category, doc) }"
+		      "map": "function(doc) { if (doc.type == 'activity') emit(doc.category,{action: doc.action, date: new Date(parseInt(doc.updatedAt)), qty: doc.quantity, units: doc.units})}"
 		    },
 		    "by_date": {
 		      "map": "function(doc) { if (doc.type == 'activity')  emit(doc.updatedAt, doc) }"
@@ -128,12 +128,19 @@ var getPagedActivities = function(req,resp) {
 	});
 }
 
-var getActivities = function(resp) {
-	db.view('activity/by_date', {descending: true},function (err, dat) {
+var getCategories = function(req,resp) {
+	var options = {};
+	console.log(req.query);
+	if(req.query.key) options.key=req.query.key;
+	db.view('activity/by_category', options,function (err, dat) {
 		if(err) {
 			resp.send(JSON.stringify(err));
 		} else {
-//			console.log(dat);
+			console.log(dat.length);
+			if(dat.length>0) {
+				console.log(dat[0].key);
+				console.log(dat[dat.length-1].key);
+			}
 			resp.send(dat);
 	    }
 	});
@@ -167,6 +174,11 @@ checkOrCreateDB();
 // 	res.header('Cache-Control','max-age=10');
 // 	getPagedActivities(req.params.lim, null, res);
 // });
+//List all activities in a given category (use for charting)
+app.get('/categories', function(req,res) {
+	res.header('Cache-Control','max-age=10');
+	getCategories(req,res);
+});
 //List all activities
 app.get('/activities', function(req,res) {
 	res.header('Cache-Control','max-age=10');
