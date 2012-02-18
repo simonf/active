@@ -45,7 +45,11 @@ var createViews = function() {
 		    },
 		    "by_date": {
 		      "map": "function(doc) { if (doc.type == 'activity')  emit(doc.updatedAt, doc) }"
-		    }
+		    },
+		   "distinct_category": {
+		       "map": "function(doc) { if (doc.type == 'activity') emit(doc.category, null) }",
+		       "reduce": "function(keys,values) { emit(null) }"
+		   }
 		  }
 		};
 	
@@ -128,7 +132,19 @@ var getPagedActivities = function(req,resp) {
 	});
 }
 
-var getCategories = function(req,resp) {
+var getCategories = function(resp) {
+	var options = {group: true};
+	db.view('activity/distinct_category',options,function(err,dat) {
+		if(err) {
+			resp.send(JSON.stringify(err));
+		} else {
+			console.log(dat);
+			resp.send(dat);
+	    }
+	});
+}
+
+var getCategoryEvents = function(req,resp) {
 	var options = {};
 	console.log(req.query);
 	if(req.query.key) options.key=req.query.key;
@@ -177,7 +193,11 @@ checkOrCreateDB();
 //List all activities in a given category (use for charting)
 app.get('/categories', function(req,res) {
 	res.header('Cache-Control','max-age=10');
-	getCategories(req,res);
+	getCategories(res);
+});
+app.get('/category', function(req,res) {
+	res.header('Cache-Control','max-age=10');
+	getCategoryEvents(req,res);
 });
 //List all activities
 app.get('/activities', function(req,res) {
