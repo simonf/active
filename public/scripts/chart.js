@@ -1,5 +1,11 @@
 (function() {
-  var cleanAndSortByAction, fetchDataForCategory, fetchDistinctCategories, initCap, plotData;
+  var cleanAndSortByAction, fetchAndPlotSelectedCategory, fetchDataForCategory, fetchDistinctCategories, initCap, plotData;
+
+  fetchAndPlotSelectedCategory = function() {
+    var el;
+    el = $('#cat-list option:selected')[0];
+    if (el) fetchDataForCategory(el.text);
+  };
 
   fetchDistinctCategories = function() {
     jQuery.get('../categories', function(data) {
@@ -8,6 +14,7 @@
           $('#cat-list').append('<option>' + v.key + '</option>');
         }
       });
+      fetchAndPlotSelectedCategory();
     });
   };
 
@@ -53,22 +60,22 @@
   };
 
   plotData = function(data, labels) {
-    console.log(data);
+    console.log(data.toString());
     console.log(labels);
     $.jqplot('plot1', data, {
       series: labels,
       axes: {
         xaxis: {
           renderer: $.jqplot.DateAxisRenderer,
-          min: 'January 1, 2012 16:00:00',
+          min: 1326700000000,
           tickInterval: '1 day',
           tickOptions: {
-            formatString: '%Y/%#m/%#d'
+            formatString: '%#m/%#d'
           }
         },
         yaxis: {
           tickOptions: {
-            formatString: '$%2d'
+            formatString: '%2d'
           }
         }
       }
@@ -77,7 +84,9 @@
 
   jQuery(function() {
     fetchDistinctCategories();
-    console.log(fetchDataForCategory('Sleep'));
+    $('#cat-list').change(function() {
+      fetchAndPlotSelectedCategory();
+    });
   });
 
 }).call(this);
