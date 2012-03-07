@@ -38,7 +38,8 @@
 
   root.List = Backbone.Collection.extend({
     model: Item,
-    url: '/activities?limit=25',
+    baseURL: '/activities',
+    url: '/activities',
     initialize: function() {
       _.bindAll(this, 'updatePageNumberInfo', 'getNextPage', 'getPrevPage');
     },
@@ -65,11 +66,12 @@
       tgtPage: 0
     },
     updatePageNumberInfo: function() {
+      this.url = this.baseURL;
       this.pageInfo.currentPageNum = this.pageInfo.tgtPage;
     },
     getNextPage: function(view) {
-      var pn, psk;
-      var _this = this;
+      var pn, psk,
+        _this = this;
       pn = this.pageInfo.currentPageNum;
       psk = this.pageInfo.pageStartKeys;
       if (psk.length > pn + 1) {
@@ -86,8 +88,8 @@
       });
     },
     getPrevPage: function(view) {
-      var pn, psk;
-      var _this = this;
+      var pn, psk,
+        _this = this;
       pn = this.pageInfo.currentPageNum;
       psk = this.pageInfo.pageStartKeys;
       if (pn > 0) {

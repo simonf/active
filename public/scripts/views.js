@@ -50,8 +50,10 @@
       this.collection = new List();
       this.collection.bind('add', this.prependItem);
       this.collection.bind('draw', this.render);
+      this.collection.url = '/activities?limit=25';
       this.collection.fetch({
         success: function() {
+          _this.collection.url = _this.collection.baseURL;
           return _this.render();
         }
       });
