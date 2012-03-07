@@ -34,8 +34,9 @@ root.Item = Backbone.Model.extend {
 ##Backbone collection for managing a list of items
 root.List = Backbone.Collection.extend {
 	model: Item,
+	baseURL: '/activities',
 	# The URL that will be called by default to populate the collection
-	url: '/activities?limit=25',
+	url: '/activities',
 	#Called on creation
 	initialize: ->
 		# Ensure the value of "this" is correct in these functions
@@ -70,7 +71,10 @@ root.List = Backbone.Collection.extend {
 		tgtPage: 0
 	},
 	# called just before drawing the collection
+	# note we restore the collection URL so that calls to destroy on member items
+	# will use the correct URL (/activities) instead of a polluted one (/activies?limit...)
 	updatePageNumberInfo: ->
+		this.url = this.baseURL
 		this.pageInfo.currentPageNum = this.pageInfo.tgtPage
 		return
 	,

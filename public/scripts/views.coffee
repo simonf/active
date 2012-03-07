@@ -60,8 +60,10 @@ root.ListView = Backbone.View.extend {
 		# whenever the list of items receives the draw event, go ahead and draw the items
 		this.collection.bind 'draw',this.render
 		# When the page has loaded, fetch the initial set of Items
+		this.collection.url='/activities?limit=25'
 		this.collection.fetch {
 			success: =>
+				this.collection.url = this.collection.baseURL
 				this.render()
 		}
 		return
