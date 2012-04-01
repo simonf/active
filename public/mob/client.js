@@ -1,7 +1,7 @@
 Ext.define('Activity',{
 	extend: 'Ext.data.Model',
 	config: {
-		fields: ['_id','_rev','action','category','quantity','units','updatedAt'],
+		fields: ['action','category','quantity','units','updatedAt'],
 	}
 });
 
@@ -31,13 +31,63 @@ var tpl = new Ext.XTemplate(
 	'</span></div>'
  );
 
+var listPanel = Ext.create('Ext.dataview.List',{
+	title: 'Activities',
+	iconCls: 'star',
+	store: mystore,
+	itemTpl: tpl,
+	listeners: {
+		itemtap: function(view, index, target, record, e, eOpts) {
+			alert(record.action);
+		}
+	}
+});
+
+var fieldSet = Ext.create('Ext.form.FieldSet',{
+	title: 'Activity',
+    instructions: '(timestamp defaults to today)',
+    items: [
+        { xtype: 'textfield', name: 'action', label: 'Action' },
+        { xtype: 'textfield', name: 'category', label: 'Category' },
+        { xtype: 'textfield', name: 'quantity',	label: 'Quantity' },
+		{ xtype: 'textfield', name: 'units', label: 'Units'	}
+    ]
+});
+
+
 Ext.application({
     name: 'Sencha',
     launch: function() {
-		Ext.create('Ext.List', {
-			fullscreen: true,
-			store: mystore,
-		    itemTpl: tpl //'{action} ({category}): {quantity} {units}'
+        var mainContainer = Ext.create("Ext.tab.Panel", {
+            fullscreen: true,
+			tabBarPosition: 'bottom',
+            items: [
+				listPanel, 
+                {
+                    title: 'Activity',
+                    iconCls: 'user',
+                    xtype: 'formpanel',
+                    layout: 'vbox',
+                    items: [ fieldSet,
+	                   {
+                            xtype: 'button',
+                            text: 'Create',
+                            ui: 'confirm',
+                            handler: function() {
+								var a = this.up('formpanel').getValues();
+								var b = new Activity();
+								b.setData(a);
+								b.set('updatedAt',new Date().getTime().toString());
+								listPanel.getStore().add(b);
+								listPanel.getStore().sync();
+								listPanel.refresh();
+								this.up('tabpanel').setActiveItem(0);
+                            }
+                        }
+					]
+				}
+			]
 		});
+		mainContainer.setActiveItem(1);
 	}
 });

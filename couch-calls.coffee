@@ -42,6 +42,14 @@ createViews = ->
 			distinct_category: {
 				map: "function(doc) { if (doc.type == 'activity') emit(doc.category, null) }",
 				reduce: "function(keys,values) { emit(null) }"
+			},
+			categoryactions: {
+				map: "function(doc) { if (doc.type == 'activity')  emit([doc.category.trim(), doc.action.trim()]) }",
+				reduce: "function(keys,values) { emit(null) }"
+			},
+			actioncategories: {
+				map: "function(doc) { if(doc.type == 'activity') emit([doc.action.trim(),doc.category.trim()]) }",
+			reduce: "function(keys,values) { emit(null) }"
 			}
 		}
 	}
