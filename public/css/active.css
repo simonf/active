@@ -28,6 +28,11 @@ header {
     margin-left: 0.5em; }
   header h2 {
     color: #fff; }
+  header .login {
+    position: absolute;
+    top: 10px;
+    font-size: 10px;
+    left: 20px; }
   header nav {
     float: right;
     margin-right: 30px;
