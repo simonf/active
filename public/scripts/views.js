@@ -108,6 +108,11 @@
           units: qu.units,
           user: CookieChecker.getUserName()
         });
+        if ($('#yesterday-in').is(':checked')) {
+          item.set({
+            updatedAt: SFUtils.yesterdayTimestamp()
+          });
+        }
         this.clearInput();
         this.collection.add(item);
         item.save();

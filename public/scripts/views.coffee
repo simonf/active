@@ -138,6 +138,8 @@ root.ListView = Backbone.View.extend {
 				units: qu.units,
 				user: CookieChecker.getUserName()
 			}
+			if($('#yesterday-in').is(':checked'))
+				item.set({updatedAt: SFUtils.yesterdayTimestamp()})
 			this.clearInput()
 			this.collection.add(item) # results in a call to appendItem (bound in initialize, above)
 			item.save()

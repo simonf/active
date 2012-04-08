@@ -32,6 +32,10 @@ var SFUtils = {
 			range.moveStart('character', pos);
 			range.select();
 		}
+	},
+	
+	yesterdayTimestamp: function() {
+		return (new Date().getTime()-86400000).toString();
 	}
 	
 };
