@@ -135,7 +135,8 @@ root.ListView = Backbone.View.extend {
 				action: inputaction,
 				category: $('#category-in').val(),
 				quantity: qu.num,
-				units: qu.units
+				units: qu.units,
+				user: CookieChecker.getUserName()
 			}
 			this.clearInput()
 			this.collection.add(item) # results in a call to appendItem (bound in initialize, above)

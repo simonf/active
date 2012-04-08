@@ -105,7 +105,8 @@
           action: inputaction,
           category: $('#category-in').val(),
           quantity: qu.num,
-          units: qu.units
+          units: qu.units,
+          user: CookieChecker.getUserName()
         });
         this.clearInput();
         this.collection.add(item);

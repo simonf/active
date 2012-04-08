@@ -59,6 +59,7 @@ createViews = ->
 root.addActivity = (activity, resp) ->
 	activity.type = 'activity'
 	activity.updatedAt = new Date().getTime.toString if activity.updatedAt == undefined
+	activity.user = 'simon' if activity.user == undefined
 	database.save(activity, (err,res) -> 
 		if (err)
 			console.log(err)
@@ -78,8 +79,8 @@ root.updateActivity = (activity, resp) ->
 		else
 			rev = dat._rev
 			delete activity.id
-			if(activity.updatedAt == undefined)
-				activity.updatedAt = new Date().getTime().toString()
+			activity.updatedAt = new Date().getTime.toString if activity.updatedAt == undefined
+			activity.user = 'simon' if activity.user == undefined
 			activity.type = 'activity'
 			database.save id, rev, activity, (err,res) ->
 				if(err)
@@ -101,12 +102,17 @@ root.getActivity = (id, resp) ->
 	return
 
 root.getPagedActivities = (req,resp) ->
-	options = {descending: true}
+	usr = req.cookies.get('user')
+	options = {descending: true} 
 	console.log req.query
 	options.limit = req.query.limit if req.query.limit
-	options.startkey = req.query.startkey if req.query.startkey
-	database.view 'activity/by_date', options, (err, dat) ->
+	options.endkey = [usr]
+	options.startkey = [usr,{}]
+	options.startkey = [usr,req.query.startkey] if req.query.startkey
+	console.log(options)
+	database.view 'activity/user-bydate', options, (err, dat) ->
 		if err
+			console.log err
 			resp.send JSON.stringify err
 		else
 			console.log dat.length
@@ -157,3 +163,39 @@ root.delActivity = (id, resp) ->
 				return
 		return
 	return
+
+root.check_un = (un, resp) ->
+	database.get 'users', (err,dat) ->
+		if err
+			resp.send {error: err},404
+		else
+			for usr in dat.users
+				if usr.un == un
+					resp.send 200 
+					return
+			resp.send 404
+		return
+	return
+
+root.check_unpw = (req, resp) ->
+	console.log 'Logging in'
+	database.get 'users', (err,dat) ->
+		if err
+			console.log 'error in db'
+			resp.send {error: err},404
+		else
+			console.log 'Trying '+req.body.un + '/' + req.body.pw
+			for usr in dat.users
+				console.log 'checking ' + usr.toString()
+				if usr.un == req.body.un && usr.pw == req.body.pw
+					# sess = req.session
+					# sess.user = usr.un
+					resp.cookies.set('user',usr.un,{httpOnly: false})
+					console.log 'login ok'
+					resp.redirect('/public/index.html')
+					return
+			console.log 'no matching user'
+			resp.send 404
+		return
+	return
+			

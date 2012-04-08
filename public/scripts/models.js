@@ -55,8 +55,8 @@
           updatedAt: row.value.updatedAt
         };
       });
-      this.pageInfo.pageStartKeys[this.pageInfo.tgtPage] = response[0].key;
-      this.pageInfo.pageStartKeys[this.pageInfo.tgtPage + 1] = response[response.length - 1].key;
+      this.pageInfo.pageStartKeys[this.pageInfo.tgtPage] = response[0].key[1];
+      this.pageInfo.pageStartKeys[this.pageInfo.tgtPage + 1] = response[response.length - 1].key[1];
       return retval;
     },
     pageInfo: {

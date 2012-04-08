@@ -58,8 +58,8 @@ root.List = Backbone.Collection.extend {
 			}
 		
 		# parse the start id and the last id from the response and remember them in the pageInfo structure
-		this.pageInfo.pageStartKeys[this.pageInfo.tgtPage] = response[0].key
-		this.pageInfo.pageStartKeys[this.pageInfo.tgtPage+1] = response[response.length-1].key
+		this.pageInfo.pageStartKeys[this.pageInfo.tgtPage] = response[0].key[1]
+		this.pageInfo.pageStartKeys[this.pageInfo.tgtPage+1] = response[response.length-1].key[1]
 		return retval
 	,
 	# ...and here is the pageInfo structure.
