@@ -28,6 +28,11 @@ header {
     margin-left: 0.5em; }
   header h2 {
     color: #fff; }
+  header .login {
+    position: absolute;
+    top: 10px;
+    font-size: 10px;
+    left: 20px; }
   header nav {
     float: right;
     margin-right: 30px;
@@ -160,3 +165,15 @@ div.inner-row:nth-child(even) .tb-bg {
 
 .update-on-enter {
   width: 100%; }
+
+div#chart-menu {
+  float: none;
+  width: 200px; }
+
+div#plots {
+  margin-left: 0px; }
+
+h3.chartTitle a {
+  color: black;
+  font-size: 10px;
+  text-decoration: none; }

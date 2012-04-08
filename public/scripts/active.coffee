@@ -1,8 +1,11 @@
 $ ->
-	#listCollection = null
-	# Backbone model for individual entries
-
 	#Code below here gets run when the page loads (jQuery on-document-ready stuff)
+	
+	#Do we have a client side cookie set? If not, redirect to login.html
+	window.location.pathname = window.location.pathname.replace('index','login') if !CookieChecker.isLoggedIn()
+
+	# Set up login info
+	$('#logged-in-username').append(CookieChecker.getUserName())
 	
 	# Define the new view, fetch the first page of content and display it
 	listView = new ListView() 
@@ -10,6 +13,10 @@ $ ->
 	$('#action-in').autocomplete {source: listView.actionMatcher.values}
 	$('#category-in').autocomplete {source: listView.categoryMatcher.values}
 	# Bind some navigation events
+	$('#logout-link').on 'click', ->
+		CookieChecker.clearUserName()
+		window.location.pathname = window.location.pathname.replace('index','login')
+		return
 	$('#pre-page').on 'click', ->
 		listView.collection.getPrevPage()
 	$('#nxt-page').on 'click', ->

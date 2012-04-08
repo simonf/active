@@ -42,6 +42,13 @@
 			color: #fff;
 		}
 		
+		.login {
+			position: absolute;
+			top: 10px;
+			font-size: 10px;
+			left: 20px;
+		}
+		
 		nav {
 			float: right;
 			margin-right: 30px;
@@ -210,4 +217,19 @@
 
 	.update-on-enter {
 		width: 100%;
+	}
+	
+	div#chart-menu {
+		float: none;
+		width: 200px;
+	}
+	
+	div#plots {
+		margin-left: 0px;
+	}
+	
+	h3.chartTitle a{
+		color: black;
+		font-size: 10px;
+		text-decoration: none;
 	}
