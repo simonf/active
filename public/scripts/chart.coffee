@@ -6,7 +6,7 @@ fetchAndPlotSelectedCategory = ->
 fetchDistinctCategories = ->
 	jQuery.get '../categories', (data) ->
 		$.each data,(i,v) ->
-			$('#cat-list').append('<option>'+v.key+'</option>') if(v.key.length>0)
+			$('#cat-list').append('<option>'+v.key[1]+'</option>') if(v.key[1].length>0)
 			return
 		fetchAndPlotSelectedCategory()
 		return
@@ -15,6 +15,26 @@ fetchDistinctCategories = ->
 initCap = (str) ->
 	str?.substring(0,1).toUpperCase() + str?.substring(1,str.length).toLowerCase()
 	
+makeTime = (strWithColons) ->
+	arr=strWithColons.split(':')
+	retval=parseInt(arr[0])
+	if arr.length>1
+		retval += parseInt(arr[1])/60.0
+	if(arr.length>2)
+		retval += parseInt(arr[2])/3600.0
+	return retval
+
+makeQuantityNumeric = (qty) ->
+	qs=qty.toString()
+	qf=parseFloat(qty)
+	if qf.toString()==qs
+		qf
+	else
+		if qs.indexOf(':') > 0
+			makeTime(qs)
+		else
+			0
+
 cleanAndSortByAction = (couchRows) ->
 	#Clean DOM
 	$('#plots').empty()
@@ -25,7 +45,8 @@ cleanAndSortByAction = (couchRows) ->
 		v = row.value
 		latest = v.date if v.date > latest
 		earliest = v.date if v.date < earliest
-		qty = if parseInt(v.qty) then v.qty else 0
+		# qty = if parseInt(v.qty) then v.qty else 0
+		qty = makeQuantityNumeric(v.qty)
 		k = initCap jQuery.trim v.action
 		arr = actionHash[k]
 		if arr
@@ -78,6 +99,9 @@ plotData = (dataObject) ->
 		i += 1
 	return
 
+sortFunction = (a,b) ->
+	a[0]-b[0]
+
 plotOneSeries = (seriesNumber, label, data, earliest, latest) ->
 	#Create a target div
 	divnm = 'plotcat'+seriesNumber
@@ -86,64 +110,81 @@ plotOneSeries = (seriesNumber, label, data, earliest, latest) ->
 	$('#plots').append divhtml
 	$('#'+divnm).click ->
 		$('#'+divid).toggle()
-	divhtml = '<div id="' + divid + '"></div>'
+	divhtml = '<div style="height: 300px; width: 100%" id="' + divid + '"></div>'
 	$('#plots').append divhtml
 	#Get Y axis min and max
 	mm = findMinMax(data,1)
 	if(mm[0] == mm[1] && mm[0] == 0)
 		normalisedData = data.map (i) -> [i[0],1]
 		infilledData = infillMissingDays(normalisedData,0,1,0)
-#		plotAsBarChart(divid, label, infilledData, earliest, latest)
-		plotAsSeries(divid, label, infilledData, earliest, latest,[0,1])
+		plotAsBarChart(divid, label, infilledData.sort(sortFunction), earliest, latest)
+#		plotAsSeries(divid, label, infilledData, earliest, latest,[0,1])
 	else
-		plotAsSeries(divid, label, data, earliest, latest, mm)
+		# plotAsSeries(divid, label, data.sort(sortFunction), earliest, latest, mm)
+		plotAsBarChart(divid, label, data.sort(sortFunction), earliest, latest)
 	return
 
 plotAsBarChart = (divid, label, data, earliest, latest) ->
-	$.jqplot divid, [data],{
-		seriesDefaults:{
-	        renderer:$.jqplot.BarRenderer,
-	        rendererOptions: {fillToZero: true}
-	    },
-		title: label,
-		axes: { 
-			xaxis: { 
-				label: 'Date',
-				renderer: $.jqplot.DateAxisRenderer,
-				min: earliest,
-				max: latest,
-#				tickInterval: '1 week',
-#				tickOptions:{formatString:'%#m/%#d'}
-			}, 
-			yaxis: {
-#				min: 0,
-#				max: 1,
-				tickOptions:{formatString:'%2d'} 
-			}
-		}
-	}
+	$.plot($('#'+divid),[
+		{
+			color: 'rgb(0,0,255)',
+			label: label,
+			bars: {show: true, fill: true, barWidth: 24 * 60 * 60 * 1000, lineWidth:0},
+			# lines: specific bars options
+			# points: specific points options
+			# xaxis: number
+			# yaxis: number
+			# clickable: boolean
+			# hoverable: boolean
+			# shadowSize: number
+			data: data
+		}],
+		{
+			xaxis: {
+			    show: true,
+			    position: "bottom",
+			    mode: "time"
+			    # min: null or number
+			    # max: null or number
+			    # autoscaleMargin: null or number
+			  }
+		})
 	$('#'+divid).hide();
 	return
 
 plotAsSeries = (divid, label, data, earliest, latest,mm) ->
-	$.jqplot divid, [data],{
-		title: label,
-		axes: { 
-			xaxis: { 
-				label: 'Date',
-				renderer: $.jqplot.DateAxisRenderer,
+	$.plot($('#'+divid),[
+		{
+			color: 'rgb(255,0,0)',
+			label: label,
+			lines: {show: true, fill: true, lineWidth: 1},
+			# bars: specific bars options
+			points: {show: false},
+			# xaxis: number
+			# yaxis: number
+			# clickable: boolean
+			# hoverable: boolean
+			# shadowSize: number
+			data: data
+		}],
+		{
+			xaxis: {
+				show: true,
+				position: "bottom",
+				mode: "time"
 				min: earliest,
-				max: latest,
-				tickInterval: '1 week',
-				tickOptions:{formatString:'%#m/%#d'}
-			}, 
+				max: latest
+				# autoscaleMargin: null or number
+			},
 			yaxis: {
-				min: mm[0],
-				max: mm[1]+1+Math.round(mm[1]/10),
-				tickOptions:{formatString:'%2d'} 
+				show: true,
+				# min: mm[0],
+				min: 0,
+				max: mm[1]+1+Math.round(mm[1]/10)
 			}
 		}
-	}
+	)
+	
 	$('#'+divid).hide();
 	return
 

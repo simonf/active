@@ -1,13 +1,34 @@
 var SFUtils = {
+	// splitNumbersAndUnits : function(myInput) {
+	// 	if (match = /\d+\.?\d*/.exec(myInput)) {
+	// 		parsedNumber = parseFloat("0" + match[0]);
+	// 		if(parsedNumber == undefined) {
+	// 			return  { num: myInput, units: "?"};
+	// 		} else {
+	// 			dirty_units = myInput.replace(match[0],'');
+	// 			units = this.trim(dirty_units);
+	// 			return { num: parsedNumber, units: units};
+	// 		}
+	// 	} else {
+	// 		return {num: '', units: ''};
+	// 	}
+	// },
+
 	splitNumbersAndUnits : function(myInput) {
-		if (match = /\d+\.?\d*/.exec(myInput)) {
-			parsedNumber = parseFloat("0" + match[0]);
-			if(parsedNumber == undefined) {
-				return  { num: myInput, units: "?"};
+		var arr;
+		if(myInput && myInput.length > 0) {
+			arr = myInput.split(' ');
+			if (arr.length > 1) {
+				arr[0]=this.trim(arr[0]);
+				arr[1]=this.trim(arr[1]);
+				parsedNumber = parseFloat("0"+arr[0])
+				if(parsedNumber && parsedNumber.toString===arr[0]) {
+					return {num: parsedNumber, units: arr[1]};
+				} else {
+					return {num: arr[0], units: arr[1]};
+				}
 			} else {
-				dirty_units = myInput.replace(match[0],'');
-				units = this.trim(dirty_units);
-				return { num: parsedNumber, units: units};
+				return  { num: myInput, units: ''};
 			}
 		} else {
 			return {num: '', units: ''};
