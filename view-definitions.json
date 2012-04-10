@@ -1,0 +1,39 @@
+{
+    "language": "javascript", 
+    "views": {
+        "actioncategories": {
+            "map": "function(doc) {\n  emit([doc.action.trim(),doc.category.trim()]);\n}", 
+            "reduce": "function(keys,values) { emit(null); }"
+        }, 
+        "all": {
+            "map": "function(doc) { if (doc.type == 'activity')  emit(doc._id, doc) }"
+        }, 
+        "by_action": {
+            "map": "function(doc) { if (doc.type == 'activity')  emit(doc.action, doc) }"
+        }, 
+        "by_category": {
+            "map": "function(doc) { if (doc.type == 'activity')  emit(doc.category,{action: doc.action, date: parseInt(doc.updatedAt), qty: doc.quantity, units: doc.units}) }"
+        }, 
+        "by_date": {
+            "map": "function(doc) { if (doc.type == 'activity')  emit(doc.updatedAt, doc) }"
+        }, 
+        "by_usercategory": {
+            "map": "function(doc) { if (doc.type == 'activity')  emit([doc.user,doc.category],{action: doc.action, date: parseInt(doc.updatedAt), qty: doc.quantity, units: doc.units}) }"
+        }, 
+        "categoryactions": {
+            "map": "function(doc) {\n  emit([doc.category, doc.action.trim()]);\n}", 
+            "reduce": "function(keys,values) { emit(null); }\n"
+        }, 
+        "distinct_category": {
+            "map": "function(doc) { if (doc.type == 'activity') emit(doc.category, null) }", 
+            "reduce": "function(keys,values) { emit(null) }"
+        }, 
+        "distinct_usercategory": {
+            "map": "function(doc) { if (doc.type == 'activity') emit([doc.user,doc.category], null) }", 
+            "reduce": "function(keys,values) { emit(null) }"
+        }, 
+        "user-bydate": {
+            "map": "function(doc) { if (doc.type == 'activity')  emit([doc.user, doc.updatedAt], doc) }"
+        }
+    }
+}

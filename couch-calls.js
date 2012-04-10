@@ -1,7 +1,9 @@
 (function() {
-  var conn, cradle, createViews, database, fs, root, server;
+  var areViewsListsDifferent, conn, cradle, database, fs, json, root, server, updateViews;
 
   fs = require('fs');
+
+  json = require('./public/lib/json2.min.js');
 
   server = fs.readFileSync('db.ini', 'utf8');
 
@@ -21,56 +23,72 @@
       if (err) {
         console.log('error', err);
       } else if (exists) {
-        console.log('database already exists');
+        updateViews();
       } else {
         console.log('database does not exist. Creating it');
         database.create(function(err, dat) {
           if (err) return console.log(err);
         });
-        createViews;
+        updateViews();
       }
     });
   };
 
-  createViews = function() {
-    var design_doc, view_id;
-    view_id = '_design/activity';
-    design_doc = {
-      language: "javascript",
-      views: {
-        all: {
-          map: "function(doc) { if (doc.type == 'activity')  emit(doc._id, doc) }"
-        },
-        by_action: {
-          map: "function(doc) { if (doc.type == 'activity')  emit(doc.action, doc) }"
-        },
-        by_category: {
-          map: "function(doc) { if (doc.type == 'activity')  emit(doc.category,{action: doc.action, date: parseInt(doc.updatedAt), qty: doc.quantity, units: doc.units}) }"
-        },
-        by_date: {
-          map: "function(doc) { if (doc.type == 'activity')  emit(doc.updatedAt, doc) }"
-        },
-        distinct_category: {
-          map: "function(doc) { if (doc.type == 'activity') emit(doc.category, null) }",
-          reduce: "function(keys,values) { emit(null) }"
-        },
-        categoryactions: {
-          map: "function(doc) { if (doc.type == 'activity')  emit([doc.category.trim(), doc.action.trim()]) }",
-          reduce: "function(keys,values) { emit(null) }"
-        },
-        actioncategories: {
-          map: "function(doc) { if(doc.type == 'activity') emit([doc.action.trim(),doc.category.trim()]) }",
-          reduce: "function(keys,values) { emit(null) }"
+  areViewsListsDifferent = function(localDefinition, dbDefinition) {
+    var locMethod, locView, methodName, remMethod, remView, viewName, _i, _len, _ref;
+    for (viewName in localDefinition.views) {
+      remView = dbDefinition.views[viewName];
+      if (typeof remView === 'undefined') {
+        console.log("New local view: " + viewName);
+        return true;
+      }
+      locView = localDefinition.views[viewName];
+      _ref = ['map', 'reduce'];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        methodName = _ref[_i];
+        locMethod = locView[methodName];
+        remMethod = remView[methodName];
+        if (locMethod) {
+          if (remMethod) {
+            if (locMethod.replace(/[\n\r\t ]/g, '') !== remMethod.replace(/[\n\t\r ]/g, '')) {
+              console.log("Difference between:\n" + locMethod + "\nand\n" + remMethod);
+              return true;
+            }
+          } else {
+            console.log('New local ' + methodName + ' found');
+            return true;
+          }
         }
       }
+    }
+    return false;
+  };
+
+  updateViews = function(force) {
+    var dd, design_doc, view_id, _ref;
+    force = (_ref = typeof force !== 'undefined') != null ? _ref : {
+      force: false
     };
+    view_id = '_design/activity';
+    dd = fs.readFileSync('view-definitions.json', 'utf8');
+    design_doc = JSON.parse(dd);
     database.get(view_id, function(err, dat) {
+      var id, rev;
       if (err) {
         console.log(err);
         database.save(view_id, design_doc);
         console.log("Created views");
       } else {
-        console.log("Views already exist");
+        id = dat._id;
+        rev = dat._rev;
+        delete dat._id;
+        delete dat._rev;
+        if (areViewsListsDifferent(design_doc, dat)) {
+          console.log("Some missing or outdated views. Updating");
+          database.save(id, rev, design_doc);
+        } else {
+          console.log("Views OK.");
+        }
       }
     });
   };

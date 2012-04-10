@@ -1,4 +1,5 @@
 fs = require('fs')
+json = require('./public/lib/json2.min.js')
 server = fs.readFileSync 'db.ini', 'utf8'
 cradle = require('cradle')
 conn =  new(cradle.Connection)(server,5984,{cache: true, raw: false})
@@ -12,47 +13,43 @@ root.checkOrCreateDB = ->
 			console.log 'error',err
 			return
 		else if exists
-			console.log 'database already exists'
+			# console.log 'database already exists'
+			updateViews()
 			return
 		else
 			console.log 'database does not exist. Creating it'
 			database.create (err,dat) ->
 				if err
 					console.log err
-			createViews
+			updateViews()
 			return
 
-createViews = ->
+areViewsListsDifferent = (localDefinition, dbDefinition) ->
+	for viewName of localDefinition.views
+		# console.log "Comparing "+viewName
+		remView = dbDefinition.views[viewName]
+		if typeof remView == 'undefined'
+			console.log "New local view: "+viewName
+			return true
+		locView = localDefinition.views[viewName]
+		for methodName in ['map','reduce']
+			locMethod = locView[methodName]
+			remMethod = remView[methodName]
+			if locMethod
+				if remMethod
+					if locMethod.replace(/[\n\r\t ]/g,'') != remMethod.replace(/[\n\t\r ]/g,'')	
+						console.log "Difference between:\n"+locMethod+"\nand\n"+remMethod
+						return true
+				else # no remote method matches
+					console.log 'New local '+methodName+' found'
+					return true
+	return false
+
+updateViews = (force) ->
+	force = typeof force != 'undefined' ? force : false;
 	view_id = '_design/activity'
-	design_doc = {
-		language: "javascript",
-		views:	{
-			all: {
-				map: "function(doc) { if (doc.type == 'activity')  emit(doc._id, doc) }"
-			},
-			by_action: {
-				map: "function(doc) { if (doc.type == 'activity')  emit(doc.action, doc) }"
-			},
-			by_category: {
-				map: "function(doc) { if (doc.type == 'activity')  emit(doc.category,{action: doc.action, date: parseInt(doc.updatedAt), qty: doc.quantity, units: doc.units}) }"
-			},
-			by_date: {
-				map: "function(doc) { if (doc.type == 'activity')  emit(doc.updatedAt, doc) }"
-			},
-			distinct_category: {
-				map: "function(doc) { if (doc.type == 'activity') emit(doc.category, null) }",
-				reduce: "function(keys,values) { emit(null) }"
-			},
-			categoryactions: {
-				map: "function(doc) { if (doc.type == 'activity')  emit([doc.category.trim(), doc.action.trim()]) }",
-				reduce: "function(keys,values) { emit(null) }"
-			},
-			actioncategories: {
-				map: "function(doc) { if(doc.type == 'activity') emit([doc.action.trim(),doc.category.trim()]) }",
-			reduce: "function(keys,values) { emit(null) }"
-			}
-		}
-	}
+	dd = fs.readFileSync 'view-definitions.json', 'utf8'
+	design_doc = JSON.parse(dd)
 	database.get view_id, (err,dat) ->
 		if err
 			console.log err
@@ -60,7 +57,16 @@ createViews = ->
 			console.log "Created views"
 			return
 		else
-			console.log "Views already exist"
+			id = dat._id;
+			rev = dat._rev;
+			delete dat._id;
+			delete dat._rev;		
+			# console.log "Views already exist. Checking..."
+			if areViewsListsDifferent design_doc, dat
+				console.log "Some missing or outdated views. Updating"
+				database.save id, rev, design_doc
+			else
+				console.log "Views OK."
 			return
 	return
 
