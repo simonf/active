@@ -156,11 +156,14 @@
   };
 
   root.getCategories = function(resp) {
-    var options;
+    var options, usr;
+    usr = resp.cookies.get('user');
     options = {
-      group: true
+      group: true,
+      startkey: [usr],
+      endkey: [usr, {}]
     };
-    database.view('activity/distinct_category', options, function(err, dat) {
+    database.view('activity/distinct_usercategory', options, function(err, dat) {
       if (err) {
         resp.send(JSON.stringify(err));
       } else {
@@ -171,11 +174,12 @@
   };
 
   root.getCategoryEvents = function(req, resp) {
-    var options;
+    var options, usr;
     options = {};
     console.log(req.query);
-    if (req.query.key) options.key = req.query.key;
-    database.view('activity/by_category', options, function(err, dat) {
+    usr = req.cookies.get('user');
+    if (req.query.key) options.key = [usr, req.query.key];
+    database.view('activity/by_usercategory', options, function(err, dat) {
       if (err) {
         resp.send(JSON.stringify(err));
       } else {

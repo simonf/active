@@ -1,5 +1,5 @@
 (function() {
-  var cleanAndSortByAction, fetchAndPlotSelectedCategory, fetchDataForCategory, fetchDistinctCategories, findMinMax, infillMissingDays, initCap, plotAsBarChart, plotAsSeries, plotData, plotOneSeries;
+  var cleanAndSortByAction, fetchAndPlotSelectedCategory, fetchDataForCategory, fetchDistinctCategories, findMinMax, infillMissingDays, initCap, makeQuantityNumeric, makeTime, plotAsBarChart, plotAsSeries, plotData, plotOneSeries, sortFunction;
 
   fetchAndPlotSelectedCategory = function() {
     var el;
@@ -10,8 +10,8 @@
   fetchDistinctCategories = function() {
     jQuery.get('../categories', function(data) {
       $.each(data, function(i, v) {
-        if (v.key.length > 0) {
-          $('#cat-list').append('<option>' + v.key + '</option>');
+        if (v.key[1].length > 0) {
+          $('#cat-list').append('<option>' + v.key[1] + '</option>');
         }
       });
       fetchAndPlotSelectedCategory();
@@ -20,6 +20,30 @@
 
   initCap = function(str) {
     return (str != null ? str.substring(0, 1).toUpperCase() : void 0) + (str != null ? str.substring(1, str.length).toLowerCase() : void 0);
+  };
+
+  makeTime = function(strWithColons) {
+    var arr, retval;
+    arr = strWithColons.split(':');
+    retval = parseInt(arr[0]);
+    if (arr.length > 1) retval += parseInt(arr[1]) / 60.0;
+    if (arr.length > 2) retval += parseInt(arr[2]) / 3600.0;
+    return retval;
+  };
+
+  makeQuantityNumeric = function(qty) {
+    var qf, qs;
+    qs = qty.toString();
+    qf = parseFloat(qty);
+    if (qf.toString() === qs) {
+      return qf;
+    } else {
+      if (qs.indexOf(':') > 0) {
+        return makeTime(qs);
+      } else {
+        return 0;
+      }
+    }
   };
 
   cleanAndSortByAction = function(couchRows) {
@@ -33,7 +57,7 @@
       v = row.value;
       if (v.date > latest) latest = v.date;
       if (v.date < earliest) earliest = v.date;
-      qty = parseInt(v.qty) ? v.qty : 0;
+      qty = makeQuantityNumeric(v.qty);
       k = initCap(jQuery.trim(v.action));
       arr = actionHash[k];
       if (arr) {
@@ -105,6 +129,10 @@
     }
   };
 
+  sortFunction = function(a, b) {
+    return a[0] - b[0];
+  };
+
   plotOneSeries = function(seriesNumber, label, data, earliest, latest) {
     var divhtml, divid, divnm, infilledData, mm, normalisedData;
     divnm = 'plotcat' + seriesNumber;
@@ -114,7 +142,7 @@
     $('#' + divnm).click(function() {
       return $('#' + divid).toggle();
     });
-    divhtml = '<div id="' + divid + '"></div>';
+    divhtml = '<div style="height: 300px; width: 100%" id="' + divid + '"></div>';
     $('#plots').append(divhtml);
     mm = findMinMax(data, 1);
     if (mm[0] === mm[1] && mm[0] === 0) {
@@ -122,59 +150,62 @@
         return [i[0], 1];
       });
       infilledData = infillMissingDays(normalisedData, 0, 1, 0);
-      plotAsSeries(divid, label, infilledData, earliest, latest, [0, 1]);
+      plotAsBarChart(divid, label, infilledData.sort(sortFunction), earliest, latest);
     } else {
-      plotAsSeries(divid, label, data, earliest, latest, mm);
+      plotAsBarChart(divid, label, data.sort(sortFunction), earliest, latest);
     }
   };
 
   plotAsBarChart = function(divid, label, data, earliest, latest) {
-    $.jqplot(divid, [data], {
-      seriesDefaults: {
-        renderer: $.jqplot.BarRenderer,
-        rendererOptions: {
-          fillToZero: true
-        }
-      },
-      title: label,
-      axes: {
-        xaxis: {
-          label: 'Date',
-          renderer: $.jqplot.DateAxisRenderer,
-          min: earliest,
-          max: latest
+    $.plot($('#' + divid), [
+      {
+        color: 'rgb(0,0,255)',
+        label: label,
+        bars: {
+          show: true,
+          fill: true,
+          barWidth: 24 * 60 * 60 * 1000,
+          lineWidth: 0
         },
-        yaxis: {
-          tickOptions: {
-            formatString: '%2d'
-          }
-        }
+        data: data
+      }
+    ], {
+      xaxis: {
+        show: true,
+        position: "bottom",
+        mode: "time"
       }
     });
     $('#' + divid).hide();
   };
 
   plotAsSeries = function(divid, label, data, earliest, latest, mm) {
-    $.jqplot(divid, [data], {
-      title: label,
-      axes: {
-        xaxis: {
-          label: 'Date',
-          renderer: $.jqplot.DateAxisRenderer,
-          min: earliest,
-          max: latest,
-          tickInterval: '1 week',
-          tickOptions: {
-            formatString: '%#m/%#d'
-          }
+    $.plot($('#' + divid), [
+      {
+        color: 'rgb(255,0,0)',
+        label: label,
+        lines: {
+          show: true,
+          fill: true,
+          lineWidth: 1
         },
-        yaxis: {
-          min: mm[0],
-          max: mm[1] + 1 + Math.round(mm[1] / 10),
-          tickOptions: {
-            formatString: '%2d'
-          }
-        }
+        points: {
+          show: false
+        },
+        data: data
+      }
+    ], {
+      xaxis: {
+        show: true,
+        position: "bottom",
+        mode: "time",
+        min: earliest,
+        max: latest
+      },
+      yaxis: {
+        show: true,
+        min: 0,
+        max: mm[1] + 1 + Math.round(mm[1] / 10)
       }
     });
     $('#' + divid).hide();

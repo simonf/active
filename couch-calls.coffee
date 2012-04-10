@@ -132,8 +132,9 @@ root.getPagedActivities = (req,resp) ->
 	return
 
 root.getCategories = (resp) ->
-	options = {group: true}
-	database.view 'activity/distinct_category',options, (err,dat) ->
+	usr = resp.cookies.get('user')
+	options = {group: true, startkey: [usr], endkey: [usr,{}]}
+	database.view 'activity/distinct_usercategory',options, (err,dat) ->
 		if err
 			resp.send JSON.stringify err
 		else
@@ -145,8 +146,9 @@ root.getCategories = (resp) ->
 root.getCategoryEvents = (req,resp) ->
 	options = {}
 	console.log req.query
-	options.key = req.query.key if(req.query.key) 
-	database.view 'activity/by_category', options, (err, dat) ->
+	usr = req.cookies.get('user')
+	options.key = [usr,req.query.key] if(req.query.key) 
+	database.view 'activity/by_usercategory', options, (err, dat) ->
 		if err
 			resp.send JSON.stringify err
 		else
