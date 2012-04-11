@@ -89,11 +89,11 @@ root.ListView = Backbone.View.extend {
 		return
 	,
 	# An object used to do autocompletion on actions
-	actionMatcher: new ListOfValues(),
+	actionMatcher: new SFUtils.ListOfValues(),
 	# An object used to do autocompletion on categories
-	categoryMatcher: new ListOfValues(),
+	categoryMatcher: new SFUtils.ListOfValues(),
 	# An object used to find the most likely value for a category after entering an action 
-	doubleMatcher: new DoubleMatcher(),
+	doubleMatcher: new SFUtils.DoubleMatcher(),
 	# Draw the list
 	render: ->
 		# for each element in models, call the appendItem function

@@ -72,9 +72,9 @@
       });
       $('#table-body', this.el).prepend(itemView.render().el);
     },
-    actionMatcher: new ListOfValues(),
-    categoryMatcher: new ListOfValues(),
-    doubleMatcher: new DoubleMatcher(),
+    actionMatcher: new SFUtils.ListOfValues(),
+    categoryMatcher: new SFUtils.ListOfValues(),
+    doubleMatcher: new SFUtils.DoubleMatcher(),
     render: function() {
       var _this = this;
       $('#table-body', this.el).empty();
