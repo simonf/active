@@ -226,6 +226,25 @@
 	
 	div#plots {
 		margin-left: 0px;
+		
+		#series {
+			float: left;
+			width: 100px;
+			font-size: 10px;
+			li {
+				display: block;
+				line-height: 20px;
+				height: 20px;
+				list-style: none;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+		}
+		#plot-area {
+			float: left;
+			height: 400px;
+			width: 1000px;
+		}
 	}
 	
 	h3.chartTitle a{

@@ -1,5 +1,7 @@
 (function() {
-  var cleanAndSortByAction, fetchAndPlotSelectedCategory, fetchDataForCategory, fetchDistinctCategories, findMinMax, infillMissingDays, initCap, makeQuantityNumeric, makeTime, plotAsBarChart, plotAsSeries, plotData, plotOneSeries, sortFunction;
+  var cleanAndSortByAction, currentDataset, drawSelectedSeries, fetchAndPlotSelectedCategory, fetchDataForCategory, fetchDistinctCategories, findMinMax, initCap, insertMissingDays, makeFlotDataObject, makeQuantityNumeric, makeTime, normalise, plotData, sortFunction;
+
+  currentDataset = {};
 
   fetchAndPlotSelectedCategory = function() {
     var el;
@@ -48,7 +50,8 @@
 
   cleanAndSortByAction = function(couchRows) {
     var actionHash, earliest, latest;
-    $('#plots').empty();
+    $('#series').empty();
+    $('#plot-area').empty();
     actionHash = {};
     latest = 0;
     earliest = 9326700000000;
@@ -86,129 +89,123 @@
     return [min, max];
   };
 
-  infillMissingDays = function(series, dateSubIndex, valSubIndex, infillValue) {
-    var dayLength, diff, i, lastDate, newval, nextDate, retval;
-    i = 1;
+  insertMissingDays = function(series, infillValue, earliest, latest) {
+    var dayLength, diff, highestDate, i, lastDate, nextDate, retval;
     dayLength = 86400;
-    retval = [series[0]];
+    retval = [];
+    while (series[0].dateSubIndex < earliest) {
+      retval.push([earliest, infillValue]);
+      earliest += dayLength * 1000;
+    }
+    i = 1;
+    retval.push(series[0]);
     while (i < series.length) {
-      lastDate = Math.round(series[i - 1][dateSubIndex] / 1000);
-      nextDate = Math.round(series[i][dateSubIndex] / 1000);
+      lastDate = Math.round(series[i - 1][0] / 1000);
+      nextDate = Math.round(series[i][0] / 1000);
       diff = nextDate - lastDate;
       while (diff > dayLength * 2) {
-        newval = [];
         lastDate += dayLength;
-        newval[dateSubIndex] = lastDate * 1000;
-        newval[valSubIndex] = infillValue;
-        retval.push(newval);
+        retval.push([lastDate * 1000, infillValue]);
         diff = nextDate - lastDate;
       }
       retval.push(series[i]);
       i++;
-      console.log('Length: ' + i);
+    }
+    highestDate = series[series.length - 1][0] + dayLength * 1000;
+    while (highestDate < latest) {
+      retval.push([highestDate, infillValue]);
+      highestDate += dayLength * 1000;
     }
     return retval;
   };
 
   fetchDataForCategory = function(cat) {
-    return jQuery.get('../category?key=' + cat, function(data) {
+    jQuery.get('../category?key=' + cat, function(data) {
       var dataObject;
       dataObject = cleanAndSortByAction(data);
       plotData(dataObject);
     });
   };
 
+  normalise = function(series, valueAttributeIndex, normalValue) {
+    var mm;
+    mm = findMinMax(series, valueAttributeIndex);
+    if (mm[0] === mm[1] && mm[0] === 0) {
+      return series.map(function(i) {
+        return [i[0], normalValue];
+      });
+    }
+    return series;
+  };
+
+  makeFlotDataObject = function(dat, lab) {
+    var bw, point, v1, _i, _len;
+    v1 = dat[0][1];
+    bw = 12 * 60 * 60 * 1000;
+    for (_i = 0, _len = dat.length; _i < _len; _i++) {
+      point = dat[_i];
+      if (point[1] !== v1 && point[1] !== 0) {
+        bw = 24 * 60 * 60 * 1000;
+        break;
+      }
+    }
+    return {
+      data: dat,
+      label: lab,
+      bars: {
+        show: true,
+        fill: true,
+        barWidth: bw,
+        lineWidth: 0
+      }
+    };
+  };
+
   plotData = function(dataObject) {
-    var i, label, series, _ref;
-    i = 0;
+    var fixedUpData, ignore, label, normalisedData, series, _ref, _ref2;
+    $('#series').empty();
     _ref = dataObject.data;
     for (label in _ref) {
-      series = _ref[label];
-      plotOneSeries(i, label, series, dataObject.min, dataObject.max);
-      i += 1;
+      ignore = _ref[label];
+      $('#series').append('<li><input type="checkbox" name="series" value="' + label + '" checked="yes">' + label + '</ul>');
     }
-  };
-
-  sortFunction = function(a, b) {
-    return a[0] - b[0];
-  };
-
-  plotOneSeries = function(seriesNumber, label, data, earliest, latest) {
-    var divhtml, divid, divnm, infilledData, mm, normalisedData;
-    divnm = 'plotcat' + seriesNumber;
-    divhtml = '<h3 class="chartTitle" id="' + divnm + '"><a href="#">' + label + '</a></h3>';
-    divid = 'plot' + seriesNumber;
-    $('#plots').append(divhtml);
-    $('#' + divnm).click(function() {
-      return $('#' + divid).toggle();
+    $('input[type=checkbox]').live('click', function() {
+      return drawSelectedSeries();
     });
-    divhtml = '<div style="height: 300px; width: 100%" id="' + divid + '"></div>';
-    $('#plots').append(divhtml);
-    mm = findMinMax(data, 1);
-    if (mm[0] === mm[1] && mm[0] === 0) {
-      normalisedData = data.map(function(i) {
-        return [i[0], 1];
-      });
-      infilledData = infillMissingDays(normalisedData, 0, 1, 0);
-      plotAsBarChart(divid, label, infilledData.sort(sortFunction), earliest, latest);
-    } else {
-      plotAsBarChart(divid, label, data.sort(sortFunction), earliest, latest);
+    currentDataset = {};
+    _ref2 = dataObject.data;
+    for (label in _ref2) {
+      series = _ref2[label];
+      normalisedData = normalise(series, 1, 10);
+      fixedUpData = insertMissingDays(normalisedData, 0, dataObject.min, dataObject.max);
+      currentDataset[label] = makeFlotDataObject(fixedUpData.sort(sortFunction), label);
     }
+    drawSelectedSeries();
   };
 
-  plotAsBarChart = function(divid, label, data, earliest, latest) {
-    $.plot($('#' + divid), [
-      {
-        color: 'rgb(0,0,255)',
-        label: label,
-        bars: {
-          show: true,
-          fill: true,
-          barWidth: 24 * 60 * 60 * 1000,
-          lineWidth: 0
-        },
-        data: data
-      }
-    ], {
+  drawSelectedSeries = function() {
+    var checkedArray, label, options, series, toDraw;
+    checkedArray = [];
+    $("input:checkbox[name=series]:checked").each(function() {
+      return checkedArray.push($(this).val());
+    });
+    toDraw = [];
+    for (label in currentDataset) {
+      series = currentDataset[label];
+      if (checkedArray.indexOf(label) > -1) toDraw.push(series);
+    }
+    options = {
       xaxis: {
         show: true,
         position: "bottom",
         mode: "time"
       }
-    });
-    $('#' + divid).hide();
+    };
+    $.plot($('#plot-area'), toDraw, options);
   };
 
-  plotAsSeries = function(divid, label, data, earliest, latest, mm) {
-    $.plot($('#' + divid), [
-      {
-        color: 'rgb(255,0,0)',
-        label: label,
-        lines: {
-          show: true,
-          fill: true,
-          lineWidth: 1
-        },
-        points: {
-          show: false
-        },
-        data: data
-      }
-    ], {
-      xaxis: {
-        show: true,
-        position: "bottom",
-        mode: "time",
-        min: earliest,
-        max: latest
-      },
-      yaxis: {
-        show: true,
-        min: 0,
-        max: mm[1] + 1 + Math.round(mm[1] / 10)
-      }
-    });
-    $('#' + divid).hide();
+  sortFunction = function(a, b) {
+    return a[0] - b[0];
   };
 
   jQuery(function() {

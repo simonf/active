@@ -1,3 +1,5 @@
+currentDataset = {}
+
 fetchAndPlotSelectedCategory = ->
 	el = $('#cat-list option:selected')[0]
 	fetchDataForCategory el.text if el
@@ -37,7 +39,8 @@ makeQuantityNumeric = (qty) ->
 
 cleanAndSortByAction = (couchRows) ->
 	#Clean DOM
-	$('#plots').empty()
+	$('#series').empty()
+	$('#plot-area').empty()
 	actionHash = {}
 	latest=0
 	earliest=9326700000000
@@ -45,7 +48,6 @@ cleanAndSortByAction = (couchRows) ->
 		v = row.value
 		latest = v.date if v.date > latest
 		earliest = v.date if v.date < earliest
-		# qty = if parseInt(v.qty) then v.qty else 0
 		qty = makeQuantityNumeric(v.qty)
 		k = initCap jQuery.trim v.action
 		arr = actionHash[k]
@@ -65,25 +67,32 @@ findMinMax = (dataArray,subArrayIndex) ->
 		max = point[subArrayIndex] if point[subArrayIndex] > max
 	return [min,max]
 
-infillMissingDays = (series, dateSubIndex, valSubIndex, infillValue) ->
-	i=1
+insertMissingDays = (series, infillValue, earliest, latest) ->
 	dayLength=86400
-	retval = [series[0]]
+	retval = []
+	#Prefix the series with a default-value entry for each day before the series starts
+	while(series[0].dateSubIndex < earliest)
+		retval.push [earliest,infillValue]
+		earliest += dayLength*1000
+	# Now start pushing the series values onto the return array
+	i=1
+	retval.push series[0]
 	while i<series.length
-		lastDate = Math.round(series[i-1][dateSubIndex]/1000)
-		nextDate = Math.round(series[i][dateSubIndex]/1000)
+		lastDate = Math.round(series[i-1][0]/1000)
+		nextDate = Math.round(series[i][0]/1000)
 		diff = nextDate-lastDate
-		#console.log nextDate+'/'+lastDate+'/'+ diff
+		# Fill in any missing days with the default value
 		while diff > dayLength*2
-			newval=[]
 			lastDate +=dayLength
-			newval[dateSubIndex]=lastDate*1000
-			newval[valSubIndex] = infillValue
-			retval.push newval
+			retval.push [lastDate*1000,infillValue]
 			diff = nextDate - lastDate
 		retval.push series[i]
 		i++
-		console.log 'Length: '+i
+	#Suffix the series with the default value too
+	highestDate = series[series.length-1][0]+dayLength*1000
+	while(highestDate < latest)
+		retval.push [highestDate,infillValue]
+		highestDate += dayLength*1000
 	return retval
 
 fetchDataForCategory = (cat) ->
@@ -91,102 +100,70 @@ fetchDataForCategory = (cat) ->
 		dataObject = cleanAndSortByAction(data)
 		plotData dataObject
 		return
+	return
+
+normalise = (series, valueAttributeIndex, normalValue) ->
+	mm = findMinMax(series,valueAttributeIndex)
+	if(mm[0] == mm[1] && mm[0] == 0)
+		return series.map (i) -> [i[0],normalValue]
+	return series
+
+makeFlotDataObject = (dat,lab) ->
+	v1 = dat[0][1]
+	bw = 12 * 60 * 60 * 1000
+	for point in dat
+		if point[1]!=v1 && point[1] != 0
+			bw = 24 * 60 * 60 * 1000
+			break
+	
+	return {
+		data: dat,
+		label: lab,
+		bars: {show: true, fill: true, barWidth: bw, lineWidth:0},
+	}
+
 
 plotData = (dataObject) ->
-	i=0
+	#Create a checklist of labels to plot
+	$('#series').empty()
+	for label, ignore of dataObject.data
+		$('#series').append('<li><input type="checkbox" name="series" value="'+label+'" checked="yes">'+label+'</ul>');
+	$('input[type=checkbox]').live('click', ->
+		drawSelectedSeries()
+	)
+	# This is going to be saved so we can redraw it whenever we like
+	currentDataset = {}
+
+	#Copy each series to the currentDataset, transforming and normalising as we go
 	for label, series of dataObject.data
-		plotOneSeries i,label, series, dataObject.min, dataObject.max
-		i += 1
+		# Set a default value for actions that don't have a quantity recorded (so they show up in a plot)
+		normalisedData = normalise(series,1,10)
+		# Ensure each series has the same start and end date; insert zero values for missing days
+		fixedUpData = insertMissingDays(normalisedData, 0, dataObject.min, dataObject.max)
+		currentDataset[label] = makeFlotDataObject(fixedUpData.sort(sortFunction),label)
+	drawSelectedSeries()
+	return
+
+drawSelectedSeries = ->
+	checkedArray = []
+	$("input:checkbox[name=series]:checked").each( ->
+		checkedArray.push $(this).val()
+	)
+	toDraw=[]
+	for label, series of currentDataset
+		toDraw.push(series) if(checkedArray.indexOf(label) > -1)
+	options = {
+		xaxis: {
+			show: true,
+			position: "bottom",
+			mode: "time"
+		}
+	}
+	$.plot($('#plot-area'),toDraw, options)
 	return
 
 sortFunction = (a,b) ->
 	a[0]-b[0]
-
-plotOneSeries = (seriesNumber, label, data, earliest, latest) ->
-	#Create a target div
-	divnm = 'plotcat'+seriesNumber
-	divhtml = '<h3 class="chartTitle" id="' + divnm + '"><a href="#">'+label+'</a></h3>'
-	divid = 'plot' + seriesNumber
-	$('#plots').append divhtml
-	$('#'+divnm).click ->
-		$('#'+divid).toggle()
-	divhtml = '<div style="height: 300px; width: 100%" id="' + divid + '"></div>'
-	$('#plots').append divhtml
-	#Get Y axis min and max
-	mm = findMinMax(data,1)
-	if(mm[0] == mm[1] && mm[0] == 0)
-		normalisedData = data.map (i) -> [i[0],1]
-		infilledData = infillMissingDays(normalisedData,0,1,0)
-		plotAsBarChart(divid, label, infilledData.sort(sortFunction), earliest, latest)
-#		plotAsSeries(divid, label, infilledData, earliest, latest,[0,1])
-	else
-		# plotAsSeries(divid, label, data.sort(sortFunction), earliest, latest, mm)
-		plotAsBarChart(divid, label, data.sort(sortFunction), earliest, latest)
-	return
-
-plotAsBarChart = (divid, label, data, earliest, latest) ->
-	$.plot($('#'+divid),[
-		{
-			color: 'rgb(0,0,255)',
-			label: label,
-			bars: {show: true, fill: true, barWidth: 24 * 60 * 60 * 1000, lineWidth:0},
-			# lines: specific bars options
-			# points: specific points options
-			# xaxis: number
-			# yaxis: number
-			# clickable: boolean
-			# hoverable: boolean
-			# shadowSize: number
-			data: data
-		}],
-		{
-			xaxis: {
-			    show: true,
-			    position: "bottom",
-			    mode: "time"
-			    # min: null or number
-			    # max: null or number
-			    # autoscaleMargin: null or number
-			  }
-		})
-	$('#'+divid).hide();
-	return
-
-plotAsSeries = (divid, label, data, earliest, latest,mm) ->
-	$.plot($('#'+divid),[
-		{
-			color: 'rgb(255,0,0)',
-			label: label,
-			lines: {show: true, fill: true, lineWidth: 1},
-			# bars: specific bars options
-			points: {show: false},
-			# xaxis: number
-			# yaxis: number
-			# clickable: boolean
-			# hoverable: boolean
-			# shadowSize: number
-			data: data
-		}],
-		{
-			xaxis: {
-				show: true,
-				position: "bottom",
-				mode: "time"
-				min: earliest,
-				max: latest
-				# autoscaleMargin: null or number
-			},
-			yaxis: {
-				show: true,
-				# min: mm[0],
-				min: 0,
-				max: mm[1]+1+Math.round(mm[1]/10)
-			}
-		}
-	)
-	
-	$('#'+divid).hide();
-	return
 
 jQuery ->
 	fetchDistinctCategories()
