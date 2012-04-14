@@ -17,15 +17,23 @@ loggedInOrRedirect = (req,res) ->
 
 db.checkOrCreateDB()
 
+#List all categories
 app.get '/categories', (req,res) ->
 	res.header 'Cache-Control','max-age=10'
 	if loggedInOrRedirect(req,res)
 		db.getCategories res
 
+#List all events ordered by category
 app.get '/category', (req,res) ->
 	res.header 'Cache-Control','max-age=10'
 	if loggedInOrRedirect(req,res)
 		db.getCategoryEvents req,res
+
+#List all distinct action types, with their corresponding category
+app.get '/actioncategory', (req,res) ->
+	res.header 'Cache-Control', 'max-age=10'
+	if loggedInOrRedirect(req,res)
+		db.getActionCategories req,res
 
 #List all activities
 app.get '/activities', (req,res) ->

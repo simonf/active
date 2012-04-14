@@ -34,6 +34,10 @@
         }, 
         "user-bydate": {
             "map": "function(doc) { if (doc.type == 'activity')  emit([doc.user, doc.updatedAt], doc) }"
-        }
+        },
+		"distinct_useractioncategory": {
+			"map": "function(doc) { if (doc.type == 'activity') emit([doc.user,doc.action.trim(),doc.category.trim()],null) }",
+			"reduce": "function(keys,values) { emit(null) }"
+		}
     }
 }

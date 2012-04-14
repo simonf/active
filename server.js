@@ -35,6 +35,11 @@
     if (loggedInOrRedirect(req, res)) return db.getCategoryEvents(req, res);
   });
 
+  app.get('/actioncategory', function(req, res) {
+    res.header('Cache-Control', 'max-age=10');
+    if (loggedInOrRedirect(req, res)) return db.getActionCategories(req, res);
+  });
+
   app.get('/activities', function(req, res) {
     res.header('Cache-Control', 'max-age=10');
     if (loggedInOrRedirect(req, res)) return db.getPagedActivities(req, res);

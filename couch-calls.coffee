@@ -1,3 +1,9 @@
+# 
+# Uses the following Couch views:
+# activity/user-bydate
+# activity/distinct_usercategory
+# activity/by_usercategory
+# 
 fs = require('fs')
 json = require('./public/lib/json2.min.js')
 server = fs.readFileSync 'db.ini', 'utf8'
@@ -163,6 +169,19 @@ root.getCategoryEvents = (req,resp) ->
 				console.log dat[0].key
 				console.log dat[dat.length-1].key
 			resp.send(dat);
+		return
+	return
+
+root.getActionCategories = (req,resp) ->
+	usr = resp.cookies.get('user')
+	options = {group: true, startkey: [usr], endkey: [usr,{}]}
+	console.log req.query
+	database.view 'activity/distinct_useractioncategory',options, (err,dat) ->
+		if err
+			resp.send JSON.stringify err
+		else
+			console.log dat
+			resp.send dat
 		return
 	return
 

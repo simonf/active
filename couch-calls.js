@@ -211,6 +211,25 @@
     });
   };
 
+  root.getActionCategories = function(req, resp) {
+    var options, usr;
+    usr = resp.cookies.get('user');
+    options = {
+      group: true,
+      startkey: [usr],
+      endkey: [usr, {}]
+    };
+    console.log(req.query);
+    database.view('activity/distinct_useractioncategory', options, function(err, dat) {
+      if (err) {
+        resp.send(JSON.stringify(err));
+      } else {
+        console.log(dat);
+        resp.send(dat);
+      }
+    });
+  };
+
   root.delActivity = function(id, resp) {
     database.get(id, function(err, dat) {
       if (err) {
