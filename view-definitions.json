@@ -8,6 +8,9 @@
         "all": {
             "map": "function(doc) { if (doc.type == 'activity')  emit(doc._id, doc) }"
         }, 
+		"all_byuser": {
+			"map": "function(doc) { if (doc.type == 'activity')  emit([doc.user, new Date(parseInt(doc.updatedAt)).toDateString(), doc.category, doc.action, doc.quantity, doc.units],null) }"
+		},
         "by_action": {
             "map": "function(doc) { if (doc.type == 'activity')  emit(doc.action, doc) }"
         }, 
