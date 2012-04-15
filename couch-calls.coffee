@@ -239,11 +239,14 @@ root.check_unpw = (req, resp) ->
 			for usr in dat.users
 				console.log 'checking ' + usr.toString()
 				if usr.un == req.body.un && usr.pw == req.body.pw
-					# sess = req.session
-					# sess.user = usr.un
 					resp.cookies.set('user',usr.un,{httpOnly: false})
 					console.log 'login ok'
-					resp.redirect('/public/index.html')
+					if req.cookies.get('tgt')
+						console.log 'Redirecting to '+req.cookies.get('tgt')
+						resp.redirect(unescape(req.cookies.get('tgt')))
+					else
+						console.log 'No matching target cookie. Redirecting to default.'
+						resp.redirect('/public/index.html')
 					return
 			console.log 'no matching user'
 			resp.send 404

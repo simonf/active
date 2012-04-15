@@ -1,0 +1,149 @@
+	$bright-orange: #FF9500;
+	$light-orange: #ffc573;
+	$dark-brown: #a66100;
+	$palegrey: #aaa;
+
+	body {
+		background-color: $palegrey;
+	}
+
+	a {
+		color: $bright-orange;
+	}
+
+	div#content {
+		font-family: Verdana, Geneva, sans-serif;
+		font-size: 12px;
+		line-height: 16px;
+		color: #000;
+		margin: 10px;
+	}
+
+	header {
+
+	 	h1 {
+			font-family: Times New Roman, serif;
+			font-size: 24px;
+			color: $dark-brown;
+			display: inline;
+			margin-left: 0.5em;
+		}
+	
+		h2 {
+			color: #fff;
+		}
+		
+		.login {
+			position: absolute;
+			top: 10px;
+			font-size: 10px;
+			left: 20px;
+		}
+		
+		nav {
+			float: right;
+			margin-right: 30px;
+			padding: 0;
+			border: 0;
+			position: relative;
+			ul {
+				padding: 0;
+				margin: 0;
+				list-style: none;
+				li {
+					display: inline;
+					a {
+						font-weight: bold;
+						color: $dark-brown;
+					}
+				}
+			}
+		}
+	}
+	
+	#main {
+		h2 {
+			font-family: Times New Roman, serif;
+			font-size: 16;
+			color: $dark-brown;
+			margin-left: 0.5em;
+		}
+ 	
+	}
+
+	label {
+		display: inline-block;
+		width: 80px;
+		text-align: right;
+		border: 0;
+		padding: 0;
+		margin: 0;
+		margin-right: 4px;
+		color: white;
+	}
+
+	#action-in {
+		width: 200px;
+	}
+
+	#category-in {
+		width: 200px;
+	}
+
+	#quantity-in {
+		width: 5em;
+	}
+
+	#units-in {
+		width: 10em;
+	}
+
+
+	div#list {
+		border: 0;
+		padding: 0;
+		margin-right: 5px;
+		margin-bottom: 0;
+		margin-top: 5px;
+		margin-left: 5px;
+	}
+
+
+	div.item-row:nth-child(odd) {
+		background-color: #fff;
+	}
+	div.item-row:nth-child(even) {
+		background-color: $palegrey;
+	}
+
+	.padded-col {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		padding-left: 4px;
+		display: inline-block; 
+	}
+
+	.item-dt { 
+		@extend .padded-col;
+		width: 60px;
+	} 
+
+	.item-action { 
+		@extend .padded-col;
+		width: 100px; 
+	} 
+
+	.item-category { 
+		@extend .padded-col;
+		width: 100px; 
+	} 
+	
+	.item-qty { 
+		@extend .padded-col;
+		width: 60px;
+	} 
+
+	.update-on-enter {
+		width: 100%;
+	}

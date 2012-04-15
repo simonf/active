@@ -310,7 +310,13 @@
               httpOnly: false
             });
             console.log('login ok');
-            resp.redirect('/public/index.html');
+            if (req.cookies.get('tgt')) {
+              console.log('Redirecting to ' + req.cookies.get('tgt'));
+              resp.redirect(unescape(req.cookies.get('tgt')));
+            } else {
+              console.log('No matching target cookie. Redirecting to default.');
+              resp.redirect('/public/index.html');
+            }
             return;
           }
         }

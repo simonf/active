@@ -6,21 +6,45 @@ a {
 
 div#content {
   font-family: Verdana, Geneva, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 12px;
+  line-height: 16px;
   color: #000;
   margin: 10px; }
 
-header {
-  background-image: url("../img/desert1a.png");
-  height: 50px; }
-  header h1 {
-    font-family: Times New Roman, serif;
-    font-size: 36px;
-    line-height: 50px;
-    color: #a66100;
-    display: inline;
-    margin-left: 0.5em; }
+header h1 {
+  font-family: Times New Roman, serif;
+  font-size: 24px;
+  color: #a66100;
+  display: inline;
+  margin-left: 0.5em; }
+header h2 {
+  color: #fff; }
+header .login {
+  position: absolute;
+  top: 10px;
+  font-size: 10px;
+  left: 20px; }
+header nav {
+  float: right;
+  margin-right: 30px;
+  padding: 0;
+  border: 0;
+  position: relative; }
+  header nav ul {
+    padding: 0;
+    margin: 0;
+    list-style: none; }
+    header nav ul li {
+      display: inline; }
+      header nav ul li a {
+        font-weight: bold;
+        color: #a66100; }
+
+#main h2 {
+  font-family: Times New Roman, serif;
+  font-size: 16;
+  color: #a66100;
+  margin-left: 0.5em; }
 
 label {
   display: inline-block;
@@ -29,13 +53,14 @@ label {
   border: 0;
   padding: 0;
   margin: 0;
-  margin-right: 4px; }
+  margin-right: 4px;
+  color: white; }
 
 #action-in {
-  width: 70%; }
+  width: 200px; }
 
 #category-in {
-  width: 60%; }
+  width: 200px; }
 
 #quantity-in {
   width: 5em; }
@@ -43,63 +68,38 @@ label {
 #units-in {
   width: 10em; }
 
-div#list-table {
+div#list {
   border: 0;
   padding: 0;
-  margin-right: 0;
+  margin-right: 5px;
   margin-bottom: 0;
-  margin-top: 1em; }
+  margin-top: 5px;
+  margin-left: 5px; }
 
-.item-delete {
-  width: 12px;
-  height: 12px; }
+div.item-row:nth-child(odd) {
+  background-color: #fff; }
 
-img#del-img {
-  width: 8px;
-  height: 8px; }
+div.item-row:nth-child(even) {
+  background-color: #aaaaaa; }
 
-.inner-row {
-  line-height: 16px; }
-
-.th-bg {
-  font-size: 12px;
-  line-height: 16px; }
-
-.tb-bg {
-  font-size: 10px;
-  line-height: 12px;
-  min-height: 12px;
-  white-space: nowrap;
-  overflow: hidden; }
-
-.padded-float, .col_activity, .col_category, .col_quantity, .col_timestamp, #td-quantity-edit, #td-units-edit, .col_buttons {
+.padded-col, .item-dt, .item-action, .item-category, .item-qty {
   margin: 0;
+  padding: 0;
+  border: 0;
   padding-left: 4px;
-  padding-bottom: 2px;
-  float: left; }
+  display: inline-block; }
 
-.col_activity {
-  width: 40%; }
+.item-dt {
+  width: 60px; }
 
-.col_category {
-  width: 25%; }
+.item-action {
+  width: 100px; }
 
-.col_quantity {
-  width: 12%; }
+.item-category {
+  width: 100px; }
 
-.col_timestamp {
-  width: 13%; }
-
-#td-quantity-edit {
-  width: 5%; }
-
-#td-units-edit {
-  width: 5%; }
+.item-qty {
+  width: 60px; }
 
 .update-on-enter {
   width: 100%; }
-
-.col_buttons {
-  line-height: 10px;
-  width: 6%;
-  background-color: #aaaaaa; }
