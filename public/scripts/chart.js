@@ -1,5 +1,5 @@
 (function() {
-  var cleanAndSortByAction, currentDataset, drawSelectedSeries, fetchAndPlotSelectedCategory, fetchDataForCategory, fetchDistinctCategories, findMinMax, initCap, insertMissingDays, makeFlotDataObject, makeQuantityNumeric, makeTime, normalise, plotData, sortFunction;
+  var cleanAndSortByAction, currentDataset, drawSelectedSeries, fetchAndPlotSelectedCategory, fetchDataForCategory, fetchDistinctCategories, findMinMax, initCap, insertMissingDays, makeFlotDataObject, makeQuantityNumeric, makeTime, normalise, plotData, sortFunction, stripTrailingZeroes;
 
   currentDataset = {};
 
@@ -33,10 +33,23 @@
     return retval;
   };
 
+  stripTrailingZeroes = function(qty) {
+    var b, n;
+    b = qty.trim();
+    if (b.indexOf('.') > -1) {
+      n = b.lastIndexOf('0');
+      while (b.length - n === 1) {
+        b = b.substr(0, b.length - 1);
+        n = b.lastIndexOf('0');
+      }
+    }
+    return b;
+  };
+
   makeQuantityNumeric = function(qty) {
     var qf, qs;
-    qs = qty.toString();
-    qf = parseFloat(qty);
+    qs = stripTrailingZeroes(qty.toString());
+    qf = parseFloat(qs);
     if (qf.toString() === qs) {
       return qf;
     } else {

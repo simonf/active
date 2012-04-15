@@ -26,9 +26,18 @@ makeTime = (strWithColons) ->
 		retval += parseInt(arr[2])/3600.0
 	return retval
 
+stripTrailingZeroes = (qty) ->
+	b = qty.trim()
+	if b.indexOf('.') > -1
+		n = b.lastIndexOf('0');
+		while (b.length - n == 1)
+			b = b.substr(0,b.length-1)
+			n = b.lastIndexOf('0')
+	return b
+
 makeQuantityNumeric = (qty) ->
-	qs=qty.toString()
-	qf=parseFloat(qty)
+	qs=stripTrailingZeroes(qty.toString())
+	qf=parseFloat(qs)
 	if qf.toString()==qs
 		qf
 	else
