@@ -3,6 +3,8 @@
 # activity/user-bydate
 # activity/distinct_usercategory
 # activity/by_usercategory
+# activity/distinct_useractioncategory
+# activity/all_byuser
 # 
 fs = require('fs')
 json = require('./public/lib/json2.min.js')
@@ -185,6 +187,20 @@ root.getActionCategories = (req,resp) ->
 		return
 	return
 
+root.getCommaDelimited = (req, resp) ->
+	usr = resp.cookies.get('user')
+	database.view 'activity/all_byuser', (err,dat) ->
+		if err
+			resp.send JSON.stringify err
+		else
+			resp.contentType('text/csv')
+			for couchRow in dat.rows
+				if couchRow.key[0]==usr
+					resp.write couchRow.key.join()+"\n"
+			resp.end()
+		return
+	return
+	
 root.delActivity = (id, resp) ->
 	database.get id, (err,dat) ->
 		if err

@@ -45,6 +45,10 @@
     if (loggedInOrRedirect(req, res)) return db.getPagedActivities(req, res);
   });
 
+  app.get('/csv', function(req, res) {
+    if (loggedInOrRedirect(req, res)) return db.getCommaDelimited(req, res);
+  });
+
   app.get('/activities/:id', function(req, res) {
     if (loggedInOrRedirect(req, res)) return db.getActivity(req.params.id, res);
   });

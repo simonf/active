@@ -230,6 +230,25 @@
     });
   };
 
+  root.getCommaDelimited = function(req, resp) {
+    var usr;
+    usr = resp.cookies.get('user');
+    database.view('activity/all_byuser', function(err, dat) {
+      var couchRow, _i, _len, _ref;
+      if (err) {
+        resp.send(JSON.stringify(err));
+      } else {
+        resp.contentType('text/csv');
+        _ref = dat.rows;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          couchRow = _ref[_i];
+          if (couchRow.key[0] === usr) resp.write(couchRow.key.join() + "\n");
+        }
+        resp.end();
+      }
+    });
+  };
+
   root.delActivity = function(id, resp) {
     database.get(id, function(err, dat) {
       if (err) {

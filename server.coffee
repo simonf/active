@@ -40,6 +40,11 @@ app.get '/activities', (req,res) ->
 	res.header 'Cache-Control','max-age=10'
 	if loggedInOrRedirect(req,res)
 		db.getPagedActivities req,res
+		
+#Get CSV for a user
+app.get '/csv', (req,res) ->
+	if loggedInOrRedirect(req,res)
+		db.getCommaDelimited req,res
 
 #Get a single activity
 app.get '/activities/:id', (req, res) ->
