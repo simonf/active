@@ -2,22 +2,23 @@ root = exports ? this
 
 root.SFUtils = {
 
-	splitNumbersAndUnits : (myInput) ->
-		if(myInput && myInput.length > 0)
-			arr = myInput.split(' ');
-			if (arr.length > 1)
-				arr[0]=this.trim(arr[0])
-				arr[1]=this.trim(arr[1])
-				parsedNumber = parseFloat("0"+arr[0])
-				if(parsedNumber && parsedNumber.toString == arr[0])
-					return {num: parsedNumber, units: arr[1]}
-				else
-					return {num: arr[0], units: arr[1]}
+	splitNumbersAndUnits : (anInput) ->		
+		if anInput 
+			myInput = anInput.trim()
+			if myInput.length > 0
+				arr = myInput.split(' ');
+				if (arr.length > 1)
+					arr[0]=this.trim(arr[0])
+					arr[1]=this.trim(arr[1])
+					parsedNumber = parseFloat("0"+arr[0])
+					if(parsedNumber && parsedNumber.toString == arr[0])
+						return {num: parsedNumber, units: arr[1]}
+					else
+						return {num: arr[0], units: arr[1]}
 			
-			else
-				return  { num: myInput, units: ''}
-		else
-			return {num: '', units: ''}
+				else
+					return  { num: myInput, units: ''}
+		return {num: '', units: ''}
 	,
 	
 	trim : (charString) ->

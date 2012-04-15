@@ -4,37 +4,39 @@
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
 
   root.SFUtils = {
-    splitNumbersAndUnits: function(myInput) {
-      var arr, parsedNumber;
-      if (myInput && myInput.length > 0) {
-        arr = myInput.split(' ');
-        if (arr.length > 1) {
-          arr[0] = this.trim(arr[0]);
-          arr[1] = this.trim(arr[1]);
-          parsedNumber = parseFloat("0" + arr[0]);
-          if (parsedNumber && parsedNumber.toString === arr[0]) {
-            return {
-              num: parsedNumber,
-              units: arr[1]
-            };
+    splitNumbersAndUnits: function(anInput) {
+      var arr, myInput, parsedNumber;
+      if (anInput) {
+        myInput = anInput.trim();
+        if (myInput.length > 0) {
+          arr = myInput.split(' ');
+          if (arr.length > 1) {
+            arr[0] = this.trim(arr[0]);
+            arr[1] = this.trim(arr[1]);
+            parsedNumber = parseFloat("0" + arr[0]);
+            if (parsedNumber && parsedNumber.toString === arr[0]) {
+              return {
+                num: parsedNumber,
+                units: arr[1]
+              };
+            } else {
+              return {
+                num: arr[0],
+                units: arr[1]
+              };
+            }
           } else {
             return {
-              num: arr[0],
-              units: arr[1]
+              num: myInput,
+              units: ''
             };
           }
-        } else {
-          return {
-            num: myInput,
-            units: ''
-          };
         }
-      } else {
-        return {
-          num: '',
-          units: ''
-        };
       }
+      return {
+        num: '',
+        units: ''
+      };
     },
     trim: function(charString) {
       var frontTrimmed;
