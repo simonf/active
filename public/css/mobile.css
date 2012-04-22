@@ -56,6 +56,16 @@ label {
   margin-right: 4px;
   color: white; }
 
+label.narrow-label {
+  display: inline-block;
+  width: 40px;
+  text-align: right;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  margin-right: 4px;
+  color: white; }
+
 #action-in {
   width: 200px; }
 
@@ -65,8 +75,26 @@ label {
 #quantity-in {
   width: 5em; }
 
-#units-in {
-  width: 10em; }
+#when-in {
+  width: 5em; }
+
+#when-text-in {
+  float: left; }
+
+#input-buttons {
+  float: left;
+  margin-top: 4px; }
+  #input-buttons #today-button {
+    display: inline;
+    margin-left: 0.5em;
+    margin-right: 0; }
+  #input-buttons #yesterday-button {
+    display: inline;
+    margin-left: 1em; }
+
+input#add {
+  display: block;
+  clear: both; }
 
 div#list {
   border: 0;
@@ -103,3 +131,7 @@ div.item-row:nth-child(even) {
 
 .update-on-enter {
   width: 100%; }
+
+div#bottom footer {
+  margin-top: 2em;
+  font-size: 10px; }

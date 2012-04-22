@@ -78,10 +78,11 @@ updateViews = (force) ->
 			return
 	return
 
-root.addActivity = (activity, resp) ->
+root.addActivity = (req, resp) ->
+	activity = req.body
 	activity.type = 'activity'
-	activity.updatedAt = new Date().getTime.toString if activity.updatedAt == undefined
-	activity.user = 'simon' if activity.user == undefined
+	activity.updatedAt = new Date().getTime().toString() if activity.updatedAt == undefined
+	activity.user = req.cookies.get('user')
 	database.save(activity, (err,res) -> 
 		if (err)
 			console.log(err)

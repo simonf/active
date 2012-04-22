@@ -55,7 +55,7 @@
 
   app.post('/activities', function(req, res) {
     console.log(req.body);
-    if (loggedInOrRedirect(req, res)) return db.addActivity(req.body, res);
+    if (loggedInOrRedirect(req, res)) return db.addActivity(req, res);
   });
 
   app.put('/activities/:id', function(req, res) {

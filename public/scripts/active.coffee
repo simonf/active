@@ -2,7 +2,7 @@ $ ->
 	#Code below here gets run when the page loads (jQuery on-document-ready stuff)
 	
 	#Do we have a client side cookie set? If not, redirect to login.html
-	window.location.pathname = window.location.pathname.replace('index','login') if !CookieChecker.isLoggedIn()
+	CookieChecker.checkLogin()
 
 	# Set up login info
 	$('#logged-in-username').append(CookieChecker.getUserName())
@@ -15,7 +15,7 @@ $ ->
 	# Bind some navigation events
 	$('#logout-link').on 'click', ->
 		CookieChecker.clearUserName()
-		window.location.pathname = window.location.pathname.replace('index','login')
+		CookieChecker.checkLogin()
 		return
 	$('#pre-page').on 'click', ->
 		listView.collection.getPrevPage()

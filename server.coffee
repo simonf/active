@@ -55,7 +55,7 @@ app.get '/activities/:id', (req, res) ->
 app.post '/activities', (req,res) ->
 	console.log req.body
 	if loggedInOrRedirect(req,res)
-		db.addActivity req.body,res
+		db.addActivity req,res
 
 #Update an activity
 app.put '/activities/:id', (req, res) ->

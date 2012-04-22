@@ -2,9 +2,7 @@
 
   $(function() {
     var listView;
-    if (!CookieChecker.isLoggedIn()) {
-      window.location.pathname = window.location.pathname.replace('index', 'login');
-    }
+    CookieChecker.checkLogin();
     $('#logged-in-username').append(CookieChecker.getUserName());
     listView = new ListView();
     $('#action-in').autocomplete({
@@ -15,7 +13,7 @@
     });
     $('#logout-link').on('click', function() {
       CookieChecker.clearUserName();
-      window.location.pathname = window.location.pathname.replace('index', 'login');
+      CookieChecker.checkLogin();
     });
     $('#pre-page').on('click', function() {
       return listView.collection.getPrevPage();

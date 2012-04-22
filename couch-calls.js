@@ -93,12 +93,14 @@
     });
   };
 
-  root.addActivity = function(activity, resp) {
+  root.addActivity = function(req, resp) {
+    var activity;
+    activity = req.body;
     activity.type = 'activity';
     if (activity.updatedAt === void 0) {
-      activity.updatedAt = new Date().getTime.toString;
+      activity.updatedAt = new Date().getTime().toString();
     }
-    if (activity.user === void 0) activity.user = 'simon';
+    activity.user = req.cookies.get('user');
     database.save(activity, function(err, res) {
       if (err) {
         console.log(err);

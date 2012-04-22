@@ -43,6 +43,25 @@ root.SFUtils = {
 		return (new Date().getTime()-86400000).toString()
 	,
 	
+	todayMidday: ->
+		d=new Date()
+		d.setUTCHours(12)
+		d.setMinutes(0)
+		d.setSeconds(0)
+		d.setMilliseconds(0)
+		return d
+	,
+	
+	yesterdayMidday: ->
+		d=new Date()
+		d.setTime(d.getTime()-24*3600*1000)
+		d.setUTCHours(12)
+		d.setMinutes(0)
+		d.setSeconds(0)
+		d.setMilliseconds(0)
+		return d
+	,
+	
 	DoubleMatcher: -> {
 		h: {},
 		
