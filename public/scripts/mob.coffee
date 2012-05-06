@@ -11,8 +11,13 @@ $ ->
 	SFLocals = {
 		actions: [],
 		categories: [],
-		matchedActionCategories: []
+		matchedActionCategories: [],
+		setDay: (nd) ->
+			$('#when-in').val(nd.toString('dd-MMM'))
+			$('#upAt').val(nd.getTime())
 	}
+
+	SFLocals.setDay SFUtils.todayMidday()
 	
 	SimpleClient.fetchCategoriesAndActionsForUser (dat) ->
 		for row in dat
@@ -22,7 +27,12 @@ $ ->
 		#Bind some autocompletion events for jQueryUI
 		$('#action-in').autocomplete {source: SFLocals.actions}
 		$('#category-in').autocomplete {source: SFLocals.categories}
-		
+		$('#action-in').blur ->
+			poss = hit[1] for hit in SFLocals.matchedActionCategories when hit[0] == $('#action-in').val()
+			$('#category-in').val poss if poss && poss.length > 0
+			return
+		return
+
 	SimpleClient.fetchEventsForUser 10, (row) ->
 		rv = '<div class="item-row"><span class="item-dt">' + new Date(parseInt(row.updatedAt)).toString('dd-MMM')+'</span>'
 		rv += '<span class="item-action">'+ row.action + '</span>'
@@ -33,13 +43,11 @@ $ ->
 	#Manage date radio buttons
 	$('#today-button').on 'change', ->
 		nd = SFUtils.todayMidday()
-		$('#when-in').val(nd.toString('dd-MMM'))
-		$('#upAt').val(nd.getTime())
+		SFLocals.setDay nd
 
 	$('#yesterday-button').on 'change', ->
 		nd = SFUtils.yesterdayMidday()
-		$('#when-in').val(nd.toString('dd-MMM'))
-		$('#upAt').val(nd.getTime())
+		SFLocals.setDay nd
 	
 	# Treat <Enter> keypress in any form input field the same as clicking on the "Add item" button
 	$('#new-item-form').on 'submit', (e) ->

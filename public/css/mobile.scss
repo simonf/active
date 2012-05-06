@@ -141,7 +141,11 @@
 		margin-left: 5px;
 	}
 	
-
+	div.item-row {
+		width: 480px;
+		line-height: 24px;
+	}
+	
 	div.item-row:nth-child(odd) {
 		background-color: #fff;
 	}
@@ -164,7 +168,7 @@
 
 	.item-action { 
 		@extend .padded-col;
-		width: 100px; 
+		width: 200px; 
 	} 
 
 	.item-category { 

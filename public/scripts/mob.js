@@ -6,8 +6,13 @@
     SFLocals = {
       actions: [],
       categories: [],
-      matchedActionCategories: []
+      matchedActionCategories: [],
+      setDay: function(nd) {
+        $('#when-in').val(nd.toString('dd-MMM'));
+        return $('#upAt').val(nd.getTime());
+      }
     };
+    SFLocals.setDay(SFUtils.todayMidday());
     SimpleClient.fetchCategoriesAndActionsForUser(function(dat) {
       var row, _i, _len;
       for (_i = 0, _len = dat.length; _i < _len; _i++) {
@@ -23,8 +28,17 @@
       $('#action-in').autocomplete({
         source: SFLocals.actions
       });
-      return $('#category-in').autocomplete({
+      $('#category-in').autocomplete({
         source: SFLocals.categories
+      });
+      $('#action-in').blur(function() {
+        var hit, poss, _j, _len2, _ref;
+        _ref = SFLocals.matchedActionCategories;
+        for (_j = 0, _len2 = _ref.length; _j < _len2; _j++) {
+          hit = _ref[_j];
+          if (hit[0] === $('#action-in').val()) poss = hit[1];
+        }
+        if (poss && poss.length > 0) $('#category-in').val(poss);
       });
     });
     SimpleClient.fetchEventsForUser(10, function(row) {
@@ -38,14 +52,12 @@
     $('#today-button').on('change', function() {
       var nd;
       nd = SFUtils.todayMidday();
-      $('#when-in').val(nd.toString('dd-MMM'));
-      return $('#upAt').val(nd.getTime());
+      return SFLocals.setDay(nd);
     });
     $('#yesterday-button').on('change', function() {
       var nd;
       nd = SFUtils.yesterdayMidday();
-      $('#when-in').val(nd.toString('dd-MMM'));
-      return $('#upAt').val(nd.getTime());
+      return SFLocals.setDay(nd);
     });
     $('#new-item-form').on('submit', function(e) {
       var r;

@@ -88,12 +88,12 @@ root.ListView = Backbone.View.extend {
 		$('#table-body', this.el).prepend itemView.render().el
 		return
 	,
-	# An object used to do autocompletion on actions
-	actionMatcher: new SFUtils.ListOfValues(),
-	# An object used to do autocompletion on categories
-	categoryMatcher: new SFUtils.ListOfValues(),
-	# An object used to find the most likely value for a category after entering an action 
-	doubleMatcher: new SFUtils.DoubleMatcher(),
+	# # An object used to do autocompletion on actions
+	# actionMatcher: new SFUtils.ListOfValues(),
+	# # An object used to do autocompletion on categories
+	# categoryMatcher: new SFUtils.ListOfValues(),
+	# # An object used to find the most likely value for a category after entering an action 
+	# doubleMatcher: new SFUtils.DoubleMatcher(),
 	# Draw the list
 	render: ->
 		# for each element in models, call the appendItem function
@@ -102,18 +102,18 @@ root.ListView = Backbone.View.extend {
 		_(this.collection.models).each (item) ->
 			this.appendItem(item)
 		, this
-		#also at page load, we extract lists of values for categories and actions
-		# this one is to match categories to selected actions
-		this.doubleMatcher.makeMatches this.collection.models,'action','category'
-		$('#action-in').blur(=>
-			this.doubleMatcher.match $('#action-in'), $('#category-in')
-		)
-		#this one powers category autocomplete functionality
-		this.categoryMatcher.makeMatches this.collection.models,'category'
-		$('#category-in').autocomplete 'option','source',this.categoryMatcher.values
-		#this one powers action autocomplete functionality
-		this.actionMatcher.makeMatches this.collection.models,'action'
-		$('#action-in').autocomplete 'option','source',this.actionMatcher.values
+		# #also at page load, we extract lists of values for categories and actions
+		# # this one is to match categories to selected actions
+		# this.doubleMatcher.makeMatches this.collection.models,'action','category'
+		# $('#action-in').blur(=>
+		# 	this.doubleMatcher.match $('#action-in'), $('#category-in')
+		# )
+		# #this one powers category autocomplete functionality
+		# this.categoryMatcher.makeMatches this.collection.models,'category'
+		# $('#category-in').autocomplete 'option','source',this.categoryMatcher.values
+		# #this one powers action autocomplete functionality
+		# this.actionMatcher.makeMatches this.collection.models,'action'
+		# $('#action-in').autocomplete 'option','source',this.actionMatcher.values
 		return
 	,
 	# Clear the input form

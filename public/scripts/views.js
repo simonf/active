@@ -72,23 +72,11 @@
       });
       $('#table-body', this.el).prepend(itemView.render().el);
     },
-    actionMatcher: new SFUtils.ListOfValues(),
-    categoryMatcher: new SFUtils.ListOfValues(),
-    doubleMatcher: new SFUtils.DoubleMatcher(),
     render: function() {
-      var _this = this;
       $('#table-body', this.el).empty();
       _(this.collection.models).each(function(item) {
         return this.appendItem(item);
       }, this);
-      this.doubleMatcher.makeMatches(this.collection.models, 'action', 'category');
-      $('#action-in').blur(function() {
-        return _this.doubleMatcher.match($('#action-in'), $('#category-in'));
-      });
-      this.categoryMatcher.makeMatches(this.collection.models, 'category');
-      $('#category-in').autocomplete('option', 'source', this.categoryMatcher.values);
-      this.actionMatcher.makeMatches(this.collection.models, 'action');
-      $('#action-in').autocomplete('option', 'source', this.actionMatcher.values);
     },
     clearInput: function() {
       $('#action-in').val('');
