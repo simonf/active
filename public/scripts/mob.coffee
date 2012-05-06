@@ -15,6 +15,34 @@ $ ->
 		setDay: (nd) ->
 			$('#when-in').val(nd.toString('dd-MMM'))
 			$('#upAt').val(nd.getTime())
+			return
+		,
+		appendRow: (row) ->
+			rv = drawRow row
+			$('#list').append rv
+			return
+		,
+		prependRow: (row) ->
+			rv = drawRow row
+			$('#list').prepend rv
+			return
+		,
+		drawRow: (row) ->
+			rv = '<div class="item-row"><span class="item-dt">' + new Date(parseInt(row.updatedAt)).toString('dd-MMM')+'</span>'
+			rv += '<span class="item-action">'+ row.action + '</span>'
+			rv += '<span class="item-category">' + row.category + '</span>'
+			rv += '<span class="item-qty">'+ row.quantity + ' '+row.units+'</span></div>'
+			return rv
+		,
+		makeRow: ->
+			r = SFUtils.splitNumbersAndUnits $('#quantity-in').val()
+			{ 
+				action: $('#action-in').val(), 
+				category: $('#category-in').val(),
+				quantity: r.num,
+				units: r.units,
+				updatedAt: $('#upAt').val()
+			}
 	}
 
 	SFLocals.setDay SFUtils.todayMidday()
@@ -33,13 +61,15 @@ $ ->
 			return
 		return
 
-	SimpleClient.fetchEventsForUser 10, (row) ->
-		rv = '<div class="item-row"><span class="item-dt">' + new Date(parseInt(row.updatedAt)).toString('dd-MMM')+'</span>'
-		rv += '<span class="item-action">'+ row.action + '</span>'
-		rv += '<span class="item-category">' + row.category + '</span>'
-		rv += '<span class="item-qty">'+ row.quantity + ' '+row.units+'</span></div>'
-		$('#list').append(rv)
-	
+	SimpleClient.fetchEventsForUser 10, SFLocals.appendRow
+
+	# (row) ->
+	# 	rv = '<div class="item-row"><span class="item-dt">' + new Date(parseInt(row.updatedAt)).toString('dd-MMM')+'</span>'
+	# 	rv += '<span class="item-action">'+ row.action + '</span>'
+	# 	rv += '<span class="item-category">' + row.category + '</span>'
+	# 	rv += '<span class="item-qty">'+ row.quantity + ' '+row.units+'</span></div>'
+	# 	$('#list').append(rv)
+
 	#Manage date radio buttons
 	$('#today-button').on 'change', ->
 		nd = SFUtils.todayMidday()
@@ -52,16 +82,10 @@ $ ->
 	# Treat <Enter> keypress in any form input field the same as clicking on the "Add item" button
 	$('#new-item-form').on 'submit', (e) ->
 		e.preventDefault()
-		r = SFUtils.splitNumbersAndUnits $('#quantity-in').val()
-		$.post '/activities', { 
-			action: $('#action-in').val(), 
-			category: $('#category-in').val(),
-			quantity: r.num,
-			units: r.units,
-			updatedAt: $('#upAt').val()
-			},
+		row = SFLocals.makeRow()
+		$.post '/activities', row,
 			(data) ->
-				alert("Data Loaded: " + data)
+				SFLocals.prependRow row
 		return false
 
 	# Set initial focus to the first field in the form

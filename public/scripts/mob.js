@@ -9,7 +9,36 @@
       matchedActionCategories: [],
       setDay: function(nd) {
         $('#when-in').val(nd.toString('dd-MMM'));
-        return $('#upAt').val(nd.getTime());
+        $('#upAt').val(nd.getTime());
+      },
+      appendRow: function(row) {
+        var rv;
+        rv = drawRow(row);
+        $('#list').append(rv);
+      },
+      prependRow: function(row) {
+        var rv;
+        rv = drawRow(row);
+        $('#list').prepend(rv);
+      },
+      drawRow: function(row) {
+        var rv;
+        rv = '<div class="item-row"><span class="item-dt">' + new Date(parseInt(row.updatedAt)).toString('dd-MMM') + '</span>';
+        rv += '<span class="item-action">' + row.action + '</span>';
+        rv += '<span class="item-category">' + row.category + '</span>';
+        rv += '<span class="item-qty">' + row.quantity + ' ' + row.units + '</span></div>';
+        return rv;
+      },
+      makeRow: function() {
+        var r;
+        r = SFUtils.splitNumbersAndUnits($('#quantity-in').val());
+        return {
+          action: $('#action-in').val(),
+          category: $('#category-in').val(),
+          quantity: r.num,
+          units: r.units,
+          updatedAt: $('#upAt').val()
+        };
       }
     };
     SFLocals.setDay(SFUtils.todayMidday());
@@ -41,14 +70,7 @@
         if (poss && poss.length > 0) $('#category-in').val(poss);
       });
     });
-    SimpleClient.fetchEventsForUser(10, function(row) {
-      var rv;
-      rv = '<div class="item-row"><span class="item-dt">' + new Date(parseInt(row.updatedAt)).toString('dd-MMM') + '</span>';
-      rv += '<span class="item-action">' + row.action + '</span>';
-      rv += '<span class="item-category">' + row.category + '</span>';
-      rv += '<span class="item-qty">' + row.quantity + ' ' + row.units + '</span></div>';
-      return $('#list').append(rv);
-    });
+    SimpleClient.fetchEventsForUser(10, SFLocals.appendRow);
     $('#today-button').on('change', function() {
       var nd;
       nd = SFUtils.todayMidday();
@@ -60,17 +82,11 @@
       return SFLocals.setDay(nd);
     });
     $('#new-item-form').on('submit', function(e) {
-      var r;
+      var row;
       e.preventDefault();
-      r = SFUtils.splitNumbersAndUnits($('#quantity-in').val());
-      $.post('/activities', {
-        action: $('#action-in').val(),
-        category: $('#category-in').val(),
-        quantity: r.num,
-        units: r.units,
-        updatedAt: $('#upAt').val()
-      }, function(data) {
-        return alert("Data Loaded: " + data);
+      row = SFLocals.makeRow();
+      $.post('/activities', row, function(data) {
+        return SFLocals.prependRow(row);
       });
       return false;
     });
