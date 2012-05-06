@@ -18,12 +18,12 @@ $ ->
 			return
 		,
 		appendRow: (row) ->
-			rv = drawRow row
+			rv = SFLocals.drawRow row
 			$('#list').append rv
 			return
 		,
 		prependRow: (row) ->
-			rv = drawRow row
+			rv = SFLocals.drawRow row
 			$('#list').prepend rv
 			return
 		,

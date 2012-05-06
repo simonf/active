@@ -13,12 +13,12 @@
       },
       appendRow: function(row) {
         var rv;
-        rv = drawRow(row);
+        rv = SFLocals.drawRow(row);
         $('#list').append(rv);
       },
       prependRow: function(row) {
         var rv;
-        rv = drawRow(row);
+        rv = SFLocals.drawRow(row);
         $('#list').prepend(rv);
       },
       drawRow: function(row) {
