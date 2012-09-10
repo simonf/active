@@ -82,9 +82,10 @@
       $('#action-in').val('');
       $('#category-in').val('');
       $('#quantity-in').val(' ');
+      $('#ts-in').val('');
     },
     addItem: function() {
-      var inputaction, item, qu;
+      var ds, explicitDate, inputaction, item, qu;
       item = new Item();
       qu = SFUtils.splitNumbersAndUnits($('#quantity-in').val());
       inputaction = $('#action-in').val();
@@ -99,6 +100,13 @@
         if ($('#yesterday-in').is(':checked')) {
           item.set({
             updatedAt: SFUtils.yesterdayTimestamp()
+          });
+        }
+        explicitDate = $('#ts-in').val();
+        if (explicitDate) {
+          ds = $.datepicker.parseDate("yy-mm-dd", explicitDate);
+          item.set({
+            updatedAt: ds.getTime().toString()
           });
         }
         this.clearInput();

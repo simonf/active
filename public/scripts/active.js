@@ -61,6 +61,9 @@
         return true;
       }
     });
+    $('#ts-in').datepicker({
+      dateFormat: "yy-mm-dd"
+    });
     return $('#action-in').focus();
   });
 

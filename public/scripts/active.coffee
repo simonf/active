@@ -53,5 +53,7 @@ $ ->
 		else
 			return true
 		return
+	# Add datepicker to the input field
+	$('#ts-in').datepicker({ dateFormat: "yy-mm-dd" })
 	# Set initial focus to the first field in the form
 	$('#action-in').focus()

@@ -121,6 +121,7 @@ root.ListView = Backbone.View.extend {
 		$('#action-in').val('')
 		$('#category-in').val('')
 		$('#quantity-in').val(' ')
+		$('#ts-in').val('')
 		return
 	,
 	# Add a new item based on what is in the input form
@@ -138,8 +139,12 @@ root.ListView = Backbone.View.extend {
 				units: qu.units,
 				user: CookieChecker.getUserName()
 			}
-			if($('#yesterday-in').is(':checked'))
-				item.set({updatedAt: SFUtils.yesterdayTimestamp()})
+			if $('#yesterday-in').is(':checked')
+				item.set {updatedAt: SFUtils.yesterdayTimestamp()}
+			explicitDate = $('#ts-in').val()
+			if explicitDate
+				ds = $.datepicker.parseDate("yy-mm-dd",explicitDate)
+				item.set {updatedAt: ds.getTime().toString()}
 			this.clearInput()
 			this.collection.add(item) # results in a call to appendItem (bound in initialize, above)
 			item.save()
