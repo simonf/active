@@ -23,7 +23,7 @@ $ ->
 
 	SimpleClient.fetchCategoriesAndActionsForUser (dat) ->
 		for row in dat
-			SFLocals.actions.push row.key[1] if SFLocals.categories.indexOf(row.key[1]) == -1
+			SFLocals.actions.push row.key[1] if SFLocals.actions.indexOf(row.key[1]) == -1
 			SFLocals.categories.push row.key[2] if SFLocals.categories.indexOf(row.key[2]) == -1
 			SFLocals.matchedActionCategories.push [row.key[1],row.key[2]]
 		#Bind some autocompletion events for jQueryUI
