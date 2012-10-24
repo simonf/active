@@ -1,17 +1,20 @@
 db = require('./couch-calls')
 express = require('express')
-cookies = require('cookies').express
+#cookies = require('cookies').express
 
-app = express.createServer() 
-app.use(cookies())
+app = express()
+#app.use(cookies())
+app.use express.cookieParser()
+app.use express.session {secret: "n0n53n53"}
 app.use express.methodOverride()
 app.use express.bodyParser()
 app.use '/public', express.static __dirname + '/public'
+app.use '/favicon.ico', express.static __dirname + '/public/img/favicon.ico'
 
 loggedInOrRedirect = (req,res) ->
-	# sess = req.session
-	return true if req.cookies.get('user')
-	# return true if sess.user
+	sess = req.session
+	#return true if req.cookies.get('user')
+	return true if sess.user
 	res.redirect '/public/login.html'
 	return false
 

@@ -3,7 +3,6 @@
 
   $(function() {
     var SFLocals, listView;
-    CookieChecker.checkLogin();
     $('#logged-in-username').append(CookieChecker.getUserName());
     listView = new ListView();
     SFLocals = {

@@ -2,7 +2,7 @@ $ ->
 	#Code below here gets run when the page loads (jQuery on-document-ready stuff)
 	
 	#Do we have a client side cookie set? If not, redirect to login.html
-	CookieChecker.checkLogin()
+	#CookieChecker.checkLogin()
 
 	# Set up login info
 	$('#logged-in-username').append(CookieChecker.getUserName())

@@ -8,7 +8,7 @@
 # 
 fs = require('fs')
 json = require('./public/lib/json2.min.js')
-server = fs.readFileSync 'db.ini', 'utf8'
+server = "http://127.0.0.1"
 cradle = require('cradle')
 conn =  new(cradle.Connection)(server,5984,{cache: true, raw: false})
 database =  conn.database('activities')
@@ -82,7 +82,7 @@ root.addActivity = (req, resp) ->
 	activity = req.body
 	activity.type = 'activity'
 	activity.updatedAt = new Date().getTime().toString() if activity.updatedAt == undefined
-	activity.user = req.cookies.get('user')
+	activity.user = getUserFromSession(req)
 	database.save(activity, (err,res) -> 
 		if (err)
 			console.log(err)
@@ -125,7 +125,7 @@ root.getActivity = (id, resp) ->
 	return
 
 root.getPagedActivities = (req,resp) ->
-	usr = req.cookies.get('user')
+	usr = getUserFromSession(req)
 	options = {descending: true} 
 	console.log req.query
 	options.limit = req.query.limit if req.query.limit
@@ -146,8 +146,8 @@ root.getPagedActivities = (req,resp) ->
 		return
 	return
 
-root.getCategories = (resp) ->
-	usr = resp.cookies.get('user')
+root.getCategories = (req,resp) ->
+	usr = getUserFromSession(req)
 	options = {group: true, startkey: [usr], endkey: [usr,{}]}
 	database.view 'activity/distinct_usercategory',options, (err,dat) ->
 		if err
@@ -161,7 +161,7 @@ root.getCategories = (resp) ->
 root.getCategoryEvents = (req,resp) ->
 	options = {}
 	console.log req.query
-	usr = req.cookies.get('user')
+	usr = getUserFromSession(req)
 	options.key = [usr,req.query.key] if(req.query.key) 
 	database.view 'activity/by_usercategory', options, (err, dat) ->
 		if err
@@ -176,7 +176,7 @@ root.getCategoryEvents = (req,resp) ->
 	return
 
 root.getActionCategories = (req,resp) ->
-	usr = resp.cookies.get('user')
+	usr = getUserFromSession(req)
 	options = {group: true, startkey: [usr], endkey: [usr,{}]}
 	console.log req.query
 	database.view 'activity/distinct_useractioncategory',options, (err,dat) ->
@@ -189,7 +189,7 @@ root.getActionCategories = (req,resp) ->
 	return
 
 root.getCommaDelimited = (req, resp) ->
-	usr = resp.cookies.get('user')
+	usr = getUserFromSession(req)
 	database.view 'activity/all_byuser', (err,dat) ->
 		if err
 			resp.send JSON.stringify err
@@ -229,6 +229,10 @@ root.check_un = (un, resp) ->
 		return
 	return
 
+getUserFromSession = (req) ->
+	#req.cookies.get('user')
+	req.session.user
+
 root.check_unpw = (req, resp) ->
 	console.log 'Logging in'
 	database.get 'users', (err,dat) ->
@@ -240,14 +244,10 @@ root.check_unpw = (req, resp) ->
 			for usr in dat.users
 				console.log 'checking ' + usr.toString()
 				if usr.un == req.body.un && usr.pw == req.body.pw
-					resp.cookies.set('user',usr.un,{httpOnly: false})
+					req.session.user = usr.un
+#resp.cookies.set('user',usr.un,{httpOnly: false})
 					console.log 'login ok'
-					if req.cookies.get('tgt')
-						console.log 'Redirecting to '+req.cookies.get('tgt')
-						resp.redirect(unescape(req.cookies.get('tgt')))
-					else
-						console.log 'No matching target cookie. Redirecting to default.'
-						resp.redirect('/public/index.html')
+					resp.redirect('/public/index.html')
 					return
 			console.log 'no matching user'
 			resp.send 404
