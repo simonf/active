@@ -237,20 +237,21 @@ root.check_unpw = (req, resp) ->
 	console.log 'Logging in'
 	database.get 'users', (err,dat) ->
 		if err
-			console.log 'error in db'
-			resp.send {error: err},404
+			console.log "error in db: #{err}"
 		else
 			console.log 'Trying '+req.body.un + '/' + req.body.pw
 			for usr in dat.users
 				console.log 'checking ' + usr.toString()
 				if usr.un == req.body.un && usr.pw == req.body.pw
 					req.session.user = usr.un
-#resp.cookies.set('user',usr.un,{httpOnly: false})
+					resp.cookie 'validuser',usr.un
 					console.log 'login ok'
 					resp.redirect('/public/index.html')
 					return
 			console.log 'no matching user'
-			resp.send 404
+		resp.clearCookie 'validuser'
+		resp.redirect('/public/login.html')
+#		resp.send 404
 		return
 	return
 			

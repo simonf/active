@@ -36,10 +36,10 @@ $ ->
 		return
 
 	# Bind some navigation events
-	$('#logout-link').on 'click', ->
-		CookieChecker.clearUserName()
-		CookieChecker.checkLogin()
-		return
+#	$('#logout-link').on 'click', ->
+#		CookieChecker.clearUserName()
+#		CookieChecker.checkLogin()
+#		return
 	$('#pre-page').on 'click', ->
 		listView.collection.getPrevPage()
 	$('#nxt-page').on 'click', ->

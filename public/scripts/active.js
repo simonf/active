@@ -46,10 +46,6 @@
         }
       });
     });
-    $('#logout-link').on('click', function() {
-      CookieChecker.clearUserName();
-      CookieChecker.checkLogin();
-    });
     $('#pre-page').on('click', function() {
       return listView.collection.getPrevPage();
     });

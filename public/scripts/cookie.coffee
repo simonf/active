@@ -2,15 +2,15 @@ root = exports ? this
 
 root.CookieChecker = {
 	isLoggedIn: ->
-		if $.cookie('user')
+		if $.cookie('validuser')
 			return true
 		return false
 
 	getUserName: ->
-		return $.cookie('user')
+		return $.cookie('validuser')
 
 	clearUserName: ->
-		$.cookie('user',null, {path: '/'})
+		$.cookie('validuser',null, {path: '/'})
 		return
 	
 	setTargetCookie: ->
