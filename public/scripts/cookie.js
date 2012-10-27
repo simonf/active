@@ -6,16 +6,16 @@
 
   root.CookieChecker = {
     isLoggedIn: function() {
-      if ($.cookie('user')) {
+      if ($.cookie('validuser')) {
         return true;
       }
       return false;
     },
     getUserName: function() {
-      return $.cookie('user');
+      return $.cookie('validuser');
     },
     clearUserName: function() {
-      $.cookie('user', null, {
+      $.cookie('validuser', null, {
         path: '/'
       });
     },

@@ -2,9 +2,6 @@
 (function() {
 
   $(function() {
-    if (CookieChecker.isLoggedIn()) {
-      window.location.pathname = window.location.pathname.replace('login', 'index');
-    }
     $('#un').on('keyup', function() {
       var un;
       un = $('#un').val();

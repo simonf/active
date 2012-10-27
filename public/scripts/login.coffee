@@ -1,5 +1,5 @@
 $ ->
-	window.location.pathname = window.location.pathname.replace('login','index') if CookieChecker.isLoggedIn()
+#	window.location.pathname = window.location.pathname.replace('login','index') if CookieChecker.isLoggedIn()
 	$('#un').on 'keyup', ->
 		un = $('#un').val()
 		un='~' if un.length<1
