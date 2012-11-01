@@ -26,11 +26,11 @@
         }
         SFLocals.matchedActionCategories.push([row.key[1], row.key[2]]);
       }
-      $('#action-in').autocomplete({
-        source: SFLocals.actions
+      $('#action-in').inlineComplete({
+        terms: SFLocals.actions
       });
-      $('#category-in').autocomplete({
-        source: SFLocals.categories
+      $('#category-in').inlineComplete({
+        terms: SFLocals.categories
       });
       $('#action-in').blur(function() {
         var hit, poss, _j, _len1, _ref;
