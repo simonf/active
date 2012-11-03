@@ -96,19 +96,21 @@
           category: $('#category-in').val(),
           quantity: qu.num,
           units: qu.units,
-          user: CookieChecker.getUserName()
+          user: CookieChecker.getUserName(),
+          updatedAt: new Date().getTime().toString()
         });
         if ($('#yesterday-in').is(':checked')) {
           item.set({
             updatedAt: SFUtils.yesterdayTimestamp()
           });
-        }
-        explicitDate = $('#ts-in').val();
-        if (explicitDate) {
-          ds = $.datepicker.parseDate("yy-mm-dd", explicitDate);
-          item.set({
-            updatedAt: ds.getTime().toString()
-          });
+        } else {
+          explicitDate = $('#ts-in').val();
+          if (explicitDate) {
+            ds = $.datepicker.parseDate("yy-mm-dd", explicitDate);
+            item.set({
+              updatedAt: ds.getTime().toString()
+            });
+          }
         }
         this.clearInput();
         this.collection.add(item);

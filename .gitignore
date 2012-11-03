@@ -4,8 +4,6 @@ DS_Store
 jquery.jqplot.js
 jqplot.dateAxisRenderer.js
 test.*
-release.sh
 adduser.js
 active.tgz
 utils
-release.txt
