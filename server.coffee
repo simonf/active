@@ -23,7 +23,7 @@ db.checkOrCreateDB()
 #List all categories
 app.get '/categories', (req,res) ->
 	res.header 'Cache-Control','max-age=10'
-	db.getCategories res
+	db.getCategories req,res
 
 #List all events ordered by category
 app.get '/category', (req,res) ->

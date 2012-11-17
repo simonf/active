@@ -7,3 +7,4 @@ test.*
 adduser.js
 active.tgz
 utils
+node_modules

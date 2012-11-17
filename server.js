@@ -34,7 +34,7 @@
 
   app.get('/categories', function(req, res) {
     res.header('Cache-Control', 'max-age=10');
-    return db.getCategories(res);
+    return db.getCategories(req, res);
   });
 
   app.get('/category', function(req, res) {
