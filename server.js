@@ -22,7 +22,7 @@
     if (req.session.user) {
       return next();
     } else {
-      return res.redirect('/public/login.html');
+      return res.redirect("http://" + req.host + "/public/login.html");
     }
   });
 
@@ -88,7 +88,7 @@
     console.log("Logout");
     delete req.session.user;
     res.clearCookie('validuser');
-    return res.redirect('/public/login.html');
+    return res.redirect("http://" + req.host + "/public/login.html");
   });
 
   app.listen(3000);
