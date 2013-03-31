@@ -150,6 +150,8 @@ root.ListView = Backbone.View.extend {
 			this.clearInput()
 			this.collection.add(item) # results in a call to appendItem (bound in initialize, above)
 			item.save()
+			# reset the focus
+			$('#action-in').focus()
 		return
 	,
 	# Update an item's values after editing. Called on keypress in any edit field

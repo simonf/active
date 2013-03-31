@@ -115,6 +115,7 @@
         this.clearInput();
         this.collection.add(item);
         item.save();
+        $('#action-in').focus();
       }
     },
     updateItem: function(e) {
