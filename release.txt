@@ -1,6 +1,7 @@
 ./couch-calls.js
 ./db.ini
 ./server.js
+./n3.js
 ./view-definitions.json
 ./public/charts.html
 ./public/index.html
