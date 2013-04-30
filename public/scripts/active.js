@@ -12,6 +12,26 @@
       setDay: function(nd) {
         $('#when-in').val(nd.toString('dd-MMM'));
         return $('#upAt').val(nd.getTime());
+      },
+      popCategory: function() {
+        var cat, _i, _len, _ref, _results;
+        _ref = SFLocals.categories;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          cat = _ref[_i];
+          _results.push($("#cat_list").append("<option>" + cat + "</option>"));
+        }
+        return _results;
+      },
+      popActivity: function() {
+        var act, _i, _len, _ref, _results;
+        _ref = SFLocals.actions;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          act = _ref[_i];
+          _results.push($("#act_list").append("<option>" + act + "</option>"));
+        }
+        return _results;
       }
     };
     SimpleClient.fetchCategoriesAndActionsForUser(function(dat) {
@@ -32,6 +52,8 @@
       $('#category-in').inlineComplete({
         terms: SFLocals.categories
       });
+      SFLocals.popCategory();
+      SFLocals.popActivity();
       $('#action-in').blur(function() {
         var hit, poss, _j, _len1, _ref;
         _ref = SFLocals.matchedActionCategories;

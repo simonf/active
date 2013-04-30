@@ -7,6 +7,7 @@
 # activity/all_byuser
 # 
 fs = require('fs')
+n3 = require './n3'
 json = require('./public/lib/json2.min.js')
 server = "http://127.0.0.1"
 cradle = require('cradle')
@@ -127,21 +128,21 @@ root.getActivity = (id, resp) ->
 root.getPagedActivities = (req,resp) ->
 	usr = getUserFromSession(req)
 	options = {descending: true} 
-	console.log req.query
+	#console.log req.query
 	options.limit = req.query.limit if req.query.limit
 	options.endkey = [usr]
 	options.startkey = [usr,{}]
 	options.startkey = [usr,req.query.startkey] if req.query.startkey
-	console.log(options)
+	#console.log(options)
 	database.view 'activity/user-bydate', options, (err, dat) ->
 		if err
 			console.log err
 			resp.send JSON.stringify err
 		else
-			console.log dat.length
-			if dat.length>0
-				console.log dat[0].key
-				console.log dat[dat.length-1].key
+			#console.log dat.length
+			#if dat.length>0
+				#console.log dat[0].key
+				#console.log dat[dat.length-1].key
 			resp.send dat
 		return
 	return
@@ -153,24 +154,24 @@ root.getCategories = (req,resp) ->
 		if err
 			resp.send JSON.stringify err
 		else
-			console.log dat
+			#console.log dat
 			resp.send dat
 		return
 	return
 
 root.getCategoryEvents = (req,resp) ->
 	options = {}
-	console.log req.query
+	#console.log req.query
 	usr = getUserFromSession(req)
 	options.key = [usr,req.query.key] if(req.query.key) 
 	database.view 'activity/by_usercategory', options, (err, dat) ->
 		if err
 			resp.send JSON.stringify err
 		else
-			console.log dat.length
-			if dat.length>0
-				console.log dat[0].key
-				console.log dat[dat.length-1].key
+			#console.log dat.length
+			#if dat.length>0
+				#console.log dat[0].key
+				#console.log dat[dat.length-1].key
 			resp.send(dat);
 		return
 	return
@@ -178,12 +179,12 @@ root.getCategoryEvents = (req,resp) ->
 root.getActionCategories = (req,resp) ->
 	usr = getUserFromSession(req)
 	options = {group: true, startkey: [usr], endkey: [usr,{}]}
-	console.log req.query
+	#console.log req.query
 	database.view 'activity/distinct_useractioncategory',options, (err,dat) ->
 		if err
 			resp.send JSON.stringify err
 		else
-			console.log dat
+			#console.log dat
 			resp.send dat
 		return
 	return
@@ -201,7 +202,23 @@ root.getCommaDelimited = (req, resp) ->
 			resp.end()
 		return
 	return
-	
+
+root.getRDF = (req,resp) ->
+	database.view 'activity/all', (err,dat) ->
+		if err
+			resp.send JSON.stringify err
+		else
+			resp.contentType 'text/plain'
+			resp.write n3.getPrefixes()
+			resp.write "\n"
+			for couchRow in dat.rows
+				str = n3.convertToN3 couchRow.value
+				resp.write "#{str}\n"
+			resp.end()
+		return
+	return
+
+
 root.delActivity = (id, resp) ->
 	database.get id, (err,dat) ->
 		if err
@@ -239,18 +256,20 @@ root.check_unpw = (req, resp) ->
 		if err
 			console.log "error in db: #{err}"
 		else
-			console.log 'Trying '+req.body.un + '/' + req.body.pw
+			#console.log 'Trying '+req.body.un + '/' + req.body.pw
 			for usr in dat.users
-				console.log 'checking ' + usr.toString()
+				#console.log 'checking ' + usr.toString()
 				if usr.un == req.body.un && usr.pw == req.body.pw
 					req.session.user = usr.un
 					resp.cookie 'validuser',usr.un
 					console.log 'login ok'
-					resp.redirect('/public/index.html')
+					resp.redirect "http://#{req.host}/public/index.html"
+
 					return
 			console.log 'no matching user'
 		resp.clearCookie 'validuser'
-		resp.redirect('/public/login.html')
+		resp.redirect "http://#{req.host}/public/login.html"
+
 #		resp.send 404
 		return
 	return

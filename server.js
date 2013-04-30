@@ -56,6 +56,10 @@
     return db.getCommaDelimited(req, res);
   });
 
+  app.get('/rdf', function(req, res) {
+    return db.getRDF(req, res);
+  });
+
   app.get('/activities/:id', function(req, res) {
     return db.getActivity(req.params.id, res);
   });

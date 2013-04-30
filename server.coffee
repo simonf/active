@@ -44,6 +44,10 @@ app.get '/activities', (req,res) ->
 app.get '/csv', (req,res) ->
 	db.getCommaDelimited req,res
 
+#Get RDF
+app.get '/rdf', (req,res) ->
+	db.getRDF req,res
+
 #Get a single activity
 app.get '/activities/:id', (req, res) ->
 	db.getActivity req.params.id,res

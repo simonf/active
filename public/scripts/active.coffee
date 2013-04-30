@@ -17,6 +17,12 @@ $ ->
 		setDay: (nd) ->
 			$('#when-in').val(nd.toString('dd-MMM'))
 			$('#upAt').val(nd.getTime())
+		, popCategory: ->
+			for cat in SFLocals.categories
+				$("#cat_list").append "<option>#{cat}</option>"
+		, popActivity: ->
+			for act in SFLocals.actions
+				$("#act_list").append "<option>#{act}</option>"
 	}
 	# Populate it from the database
 	SimpleClient.fetchCategoriesAndActionsForUser (dat) ->
@@ -29,6 +35,8 @@ $ ->
 		$('#action-in').inlineComplete {terms: SFLocals.actions}
 #		$('#category-in').autocomplete {source: SFLocals.categories}
 		$('#category-in').inlineComplete {terms: SFLocals.categories}
+		SFLocals.popCategory()
+		SFLocals.popActivity()
 		$('#action-in').blur ->
 			poss = hit[1] for hit in SFLocals.matchedActionCategories when hit[0] == $('#action-in').val()
 			$('#category-in').val poss if poss && poss.length > 0
