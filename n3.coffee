@@ -1,8 +1,25 @@
 root = exports ? this
 
-makeISOFromTS = (ts) ->
+
+makeDateFromTS = (ts) ->
+    days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
     d = new Date parseInt ts
-    d.toISOString() 
+    retval = {}
+    retval.iso = d.toISOString()
+    y=d.getUTCFullYear()
+    m=d.getUTCMonth()+1
+    m = "0#{m}" if m < 10
+    t=d.getUTCDate()
+    t = "0#{t}" if t < 10
+    retval.day = "#{y}-#{m}-#{t}Z"
+    h = d.getUTCHours()
+    h= "0#{h}" if h < 10
+    mm = d.getUTCMinutes()
+    mm = "0#{mm}" if mm < 10
+    retval.time = "#{h}:#{mm}:00Z"
+    dow = d.getUTCDay()
+    retval.dow = days[dow]
+    retval
 
 root.getPrefixes = ->
     pa = [
@@ -14,15 +31,17 @@ root.getPrefixes = ->
     ]
     pa.join "\n"
 
-root.convertToN3 = (doc) ->
-    id = "_:#{doc._id}"
-    ts = makeISOFromTS doc.updatedAt
+root.convertToN3 = (cnt,doc) ->
+    id = "_:activity#{cnt}"
+    dt = makeDateFromTS doc.updatedAt
     usr_pred = "dc:Creator"
     ts_pred = "tim:inXSDDateTime"
+    dow_pred = "tim:DayOfWeek"
+    day_pred = "dc:date"
     cat_pred = "act:Category"
     act_pred = "act:Action"
     val_pred = "act:Value"
-    qty_id = "_:#{doc._id}qty"
+    qty_id = "_:activity#{cnt}qty"
     unit_pred =	"act:Unit"
     qty_pred = "act:Quantity"
     unit_equiv = [
@@ -43,7 +62,9 @@ root.convertToN3 = (doc) ->
     retval.push "#{id} dc:Creator \"#{doc.user}\" ."
     retval.push "#{id} act:Category \"#{doc.category}\" ."
     retval.push "#{id} act:Action \"#{doc.action}\" ."
-    retval.push "#{id} #{ts_pred} \"#{ts}\" ."
+    retval.push "#{id} #{ts_pred} \"#{dt.iso}\"^^xsd:dateTime ."
+    retval.push "#{id} #{dow_pred} \"#{dt.dow}\" ."
+    retval.push "#{id} #{day_pred} \"#{dt.day}\"^^xsd:date ."
     retval.push "#{id} #{qty_pred} #{qty_id} ."
     if doc.quantity? and doc.quantity.toString().match(":") != null
         retval.push "#{qty_id} #{hr_min_pred} \"#{doc.quantity}\" ."

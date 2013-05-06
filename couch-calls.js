@@ -252,18 +252,20 @@
 
   root.getRDF = function(req, resp) {
     database.view('activity/all', function(err, dat) {
-      var couchRow, str, _i, _len, _ref;
+      var cnt, couchRow, str, _i, _len, _ref;
       if (err) {
         resp.send(JSON.stringify(err));
       } else {
         resp.contentType('text/plain');
         resp.write(n3.getPrefixes());
         resp.write("\n");
+        cnt = 1;
         _ref = dat.rows;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           couchRow = _ref[_i];
-          str = n3.convertToN3(couchRow.value);
+          str = n3.convertToN3(cnt, couchRow.value);
           resp.write("" + str + "\n");
+          cnt += 1;
         }
         resp.end();
       }

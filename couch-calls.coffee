@@ -211,9 +211,11 @@ root.getRDF = (req,resp) ->
 			resp.contentType 'text/plain'
 			resp.write n3.getPrefixes()
 			resp.write "\n"
+			cnt = 1
 			for couchRow in dat.rows
-				str = n3.convertToN3 couchRow.value
+				str = n3.convertToN3 cnt, couchRow.value
 				resp.write "#{str}\n"
+				cnt += 1
 			resp.end()
 		return
 	return
