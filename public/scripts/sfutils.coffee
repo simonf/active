@@ -108,7 +108,23 @@ root.SFUtils = {
 				console.log(n)
 			)
 			return
-	}
+	},
+
+	MostFrequent: (numarray) -> 
+		hash = {}
+		maxEl = numarray[0]
+		maxCnt = 1
+		for num in numarray
+			ns = num.toString()
+			if typeof hash[ns] == 'undefined'
+				hash[ns] = 1
+			else
+				hash[ns] += 1
+			if hash[ns] > maxCnt
+				maxEl = num
+				maxCnt = hash[ns]
+		return maxEl
+	
 };
 
 

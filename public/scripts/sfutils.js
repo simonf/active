@@ -131,6 +131,26 @@
           });
         }
       };
+    },
+    MostFrequent: function(numarray) {
+      var hash, maxCnt, maxEl, ns, num, _i, _len;
+      hash = {};
+      maxEl = numarray[0];
+      maxCnt = 1;
+      for (_i = 0, _len = numarray.length; _i < _len; _i++) {
+        num = numarray[_i];
+        ns = num.toString();
+        if (typeof hash[ns] === 'undefined') {
+          hash[ns] = 1;
+        } else {
+          hash[ns] += 1;
+        }
+        if (hash[ns] > maxCnt) {
+          maxEl = num;
+          maxCnt = hash[ns];
+        }
+      }
+      return maxEl;
     }
   };
 

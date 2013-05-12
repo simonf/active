@@ -46,7 +46,7 @@
     baseURL: '/activities',
     url: '/activities',
     initialize: function() {
-      _.bindAll(this, 'updatePageNumberInfo', 'getNextPage', 'getPrevPage');
+      _.bindAll(this, 'updatePageNumberInfo', 'getNextPage', 'getPrevPage', 'getDefaultForCombo');
     },
     parse: function(response) {
       var retval;
@@ -109,6 +109,26 @@
           return _this.trigger('draw');
         }
       });
+    },
+    getDefaultForCombo: function(cat, act) {
+      var ca, d, ma;
+      ca = _.map(this.models, function(item) {
+        return item.attributes;
+      });
+      ma = _.filter(ca, function(item) {
+        return item.category === cat && item.action === act;
+      });
+      if (ma !== null && ma.length > 0) {
+        if (ma[0].quantity.indexOf(":") >= 0) {
+          d = new Date();
+          return "" + (d.getUTCHours()) + ":" + (d.getUTCMinutes());
+        } else {
+          return SFUtils.MostFrequent(_.map(ma, function(item) {
+            return item.quantity;
+          }));
+        }
+      }
+      return "";
     }
   });
 

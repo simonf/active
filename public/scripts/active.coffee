@@ -41,6 +41,9 @@ $ ->
 			poss = hit[1] for hit in SFLocals.matchedActionCategories when hit[0] == $('#action-in').val()
 			$('#category-in').val poss if poss && poss.length > 0
 			return
+		$('#category-in').blur ->
+			$('#quantity-in').val listView.collection.getDefaultForCombo $('#category-in').val(), $('#action-in').val()
+			return
 		return
 
 	# Bind some navigation events

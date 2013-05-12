@@ -40,7 +40,7 @@ root.List = Backbone.Collection.extend {
 	#Called on creation
 	initialize: ->
 		# Ensure the value of "this" is correct in these functions
-		_.bindAll this,'updatePageNumberInfo','getNextPage','getPrevPage'
+		_.bindAll this,'updatePageNumberInfo','getNextPage','getPrevPage','getDefaultForCombo'
 		return
 	,
 	# Called by Backbone after a collection has been fetched from the server
@@ -111,4 +111,18 @@ root.List = Backbone.Collection.extend {
 				this.trigger('draw')
 		}
 		return
+
+	getDefaultForCombo: (cat, act) ->
+		ca = _.map this.models, (item) ->
+			item.attributes
+		ma = _.filter ca, (item) ->
+			item.category == cat and item.action == act
+		if ma != null and ma.length > 0
+			if ma[0].quantity.indexOf(":") >= 0
+				d = new Date()
+				return "#{d.getUTCHours()}:#{d.getUTCMinutes()}"
+			else
+				return SFUtils.MostFrequent _.map ma, (item) ->
+					item.quantity
+		return ""
 }

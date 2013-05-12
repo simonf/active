@@ -67,6 +67,9 @@
           $('#category-in').val(poss);
         }
       });
+      $('#category-in').blur(function() {
+        $('#quantity-in').val(listView.collection.getDefaultForCombo($('#category-in').val(), $('#action-in').val()));
+      });
     });
     $('#pre-page').on('click', function() {
       return listView.collection.getPrevPage();
