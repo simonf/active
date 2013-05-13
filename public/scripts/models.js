@@ -121,7 +121,7 @@
       if (ma !== null && ma.length > 0) {
         if (ma[0].quantity.indexOf(":") >= 0) {
           d = new Date();
-          return "" + (d.getUTCHours()) + ":" + (d.getUTCMinutes());
+          return "" + (d.getHours()) + ":" + (d.getMinutes());
         } else {
           return SFUtils.MostFrequent(_.map(ma, function(item) {
             return item.quantity;
