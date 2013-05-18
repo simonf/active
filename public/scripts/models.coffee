@@ -119,8 +119,7 @@ root.List = Backbone.Collection.extend {
 			item.category == cat and item.action == act
 		if ma != null and ma.length > 0
 			if ma[0].quantity.indexOf(":") >= 0
-				d = new Date()
-				return "#{d.getHours()}:#{d.getMinutes()}"
+				return SFUtils.timeNow()
 			else
 				return SFUtils.MostFrequent _.map ma, (item) ->
 					item.quantity

@@ -111,7 +111,7 @@
       });
     },
     getDefaultForCombo: function(cat, act) {
-      var ca, d, ma;
+      var ca, ma;
       ca = _.map(this.models, function(item) {
         return item.attributes;
       });
@@ -120,8 +120,7 @@
       });
       if (ma !== null && ma.length > 0) {
         if (ma[0].quantity.indexOf(":") >= 0) {
-          d = new Date();
-          return "" + (d.getHours()) + ":" + (d.getMinutes());
+          return SFUtils.timeNow();
         } else {
           return SFUtils.MostFrequent(_.map(ma, function(item) {
             return item.quantity;

@@ -61,6 +61,16 @@ root.SFUtils = {
 		d.setMilliseconds(0)
 		return d
 	,
+
+	timeNow: ->
+		d = new Date()
+		h = d.getHours()
+		m = d.getMinutes()
+		if m<10 
+			return "#{h}:0#{m}"
+		else
+			return "#{h}:#{m}"
+
 	
 	DoubleMatcher: -> {
 		h: {},

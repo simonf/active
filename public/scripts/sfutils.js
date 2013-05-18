@@ -79,6 +79,17 @@
       d.setMilliseconds(0);
       return d;
     },
+    timeNow: function() {
+      var d, h, m;
+      d = new Date();
+      h = d.getHours();
+      m = d.getMinutes();
+      if (m < 10) {
+        return "" + h + ":0" + m;
+      } else {
+        return "" + h + ":" + m;
+      }
+    },
     DoubleMatcher: function() {
       return {
         h: {},
