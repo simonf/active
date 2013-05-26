@@ -7,6 +7,7 @@
 ./public/index.html
 ./public/login.html
 ./public/mob.html
+./public/maintenance.html
 ./public/css/active.css
 ./public/css/login.css
 ./public/css/mobile.css
@@ -43,6 +44,7 @@
 ./public/scripts/chart.js
 ./public/scripts/cookie.js
 ./public/scripts/login.js
+./public/scripts/maint.js
 ./public/scripts/mob.js
 ./public/scripts/models.js
 ./public/scripts/sfutils.js
