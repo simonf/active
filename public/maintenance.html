@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="css/active.css"/>
+		<link rel="stylesheet" href="css/ui-lightness/jquery-ui-1.8.17.custom.css"/>
+		<link rel="shortcut icon" href="img/favicon.ico"/>
+		<title>Activity Log - Maintenance</title>
+	</head>
+	<body>
+		<div id="content">
+			<div id="top">
+				<header>
+					<h1><a href="index.html">Activity Log</a></h1>
+					<nav>
+						<ul>
+							<li><a href="index.html">Home</a></li>
+							<li><a href="charts.html">Charts</a></li>
+							<li><a href="/csv">Excel</a></li>
+							<li><a href="/rdf">RDF</a></li>
+						</ul>
+					</nav>
+					<div class="login">
+						<span id="preamble">Logged in as </span>
+						<span id="logged-in-username"></span>
+						<span><a id="logout-link" href="/logout">Log in as someone else</a></span>
+					</div>
+				</header>
+			</div>
+			<div id="main">
+				<div id = "cat-change">	
+					<h2>Change a category</h2>
+					<form id="cat-form">
+						<span class="from-value">
+							<label for="category-from">Current Category</label> 
+							<select id="category-from"></select>
+						</span>
+						<span class = "to-value">
+							<label for="category-to">Change to</label> 
+							<input id="category-to" type="text"/>
+						</span>
+						<button type="button" id="cat-button" >Update</button>
+					</form> 
+					<div id = "cat-msg"/>
+				</div>
+				<div id = "act-change">
+					<h2>Change an activity</h2>
+					<form id="act-form">
+						<span class="from-value">
+							<label for="activity-from">Current Category</label> 
+							<select id="activity-from"></select>
+						</span>
+						<span class = "to-value">
+							<label for="activity-to">Change to</label> 
+							<input id="activity-to" type="text"/>
+						</span>
+						<button type="button" id="act-button" >Update</button>
+					</form> 
+					<div id = "act-msg"/>
+				</div>
+			</div>
+			<div id="bottom">
+				<footer>
+					<a href="/public/mob.html">Mobile</a>&nbsp;|&nbsp;<a href="/public/index.html">Desktop</a>
+				</footer>
+			</div>
+		</div>
+		<script src="lib/jquery-1.8.0.min.js" type="text/javascript"></script>
+		<script src="lib/jquery-ui-1.8.23.custom.min.js" type="text/javascript"></script>
+		<script src="lib/jquery.cookie.js" type="text/javascript"></script>
+		<script src="scripts/cookie.js" type="text/javascript"></script>
+		<script src="scripts/simple.js" type="text/javascript"></script>
+		<script src="scripts/maint.js" type="text/javascript"></script>
+	</body>
+</html>

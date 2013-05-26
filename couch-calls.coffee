@@ -94,12 +94,12 @@ root.addActivity = (req, resp) ->
 	)
 	return
 
-root.updateActivity = (activity, resp) ->
-	id=activity.id
+doUpdate = (activity,cb) ->
+	id = activity.id
 	database.get(id, (err,dat) ->
 		if(err)
 			console.log err
-			return
+			return false
 		else
 			rev = dat._rev
 			delete activity.id
@@ -109,11 +109,18 @@ root.updateActivity = (activity, resp) ->
 			database.save id, rev, activity, (err,res) ->
 				if(err)
 					console.log err
-					return
+					cb false
 				else
-					resp.send 200
-					return
+					cb true
 	)
+	return
+
+root.updateActivity = (activity, resp) ->
+	doUpdate activity, (tf) ->
+		if tf 
+			resp.send 200
+		else
+			resp.send 500
 	return
 
 root.getActivity = (id, resp) ->
@@ -234,6 +241,42 @@ root.delActivity = (id, resp) ->
 				return
 		return
 	return
+
+replaceAttributeValue = (user, attname, fromval, toval, cb) ->
+	retval = { scanned : 0, usermatch : 0, matchcnt : 0, updcnt : 0, errcnt : 0, errmsg : ""}
+	console.log "Replacing #{attname} value #{fromval} with #{toval} for user #{user}"
+	database.view 'activity/all', (err,dat) ->
+		if err
+			retval.errmsg = JSON.stringify err
+		else
+			for couchRow in dat.rows
+				retval.scanned += 1 
+				if couchRow.value.user == user and couchRow.value.type == 'activity' 
+					retval.usermatch += 1
+					if couchRow.value[attname] == fromval
+							retval.matchcnt += 1
+							activity = couchRow.value
+							activity[attname] = toval
+							activity.id = activity._id
+							delete activity._id
+							delete activity._rev
+							doUpdate activity, (tf) ->
+								if tf 
+									retval.updcnt += 1
+								else
+									retval.errcnt += 1
+								cb retval
+
+
+root.renameAction = (req, resp) ->
+	user = getUserFromSession(req)
+	replaceAttributeValue user, 'action', req.params.from, req.params.to, (retval) ->
+		resp.send JSON.stringify retval
+
+root.renameCategory = (req, resp) ->
+	user = getUserFromSession(req)
+	replaceAttributeValue user, 'category', req.params.from, req.params.to, (retval) ->
+		resp.send JSON.stringify retval
 
 root.check_un = (un, resp) ->
 	database.get 'users', (err,dat) ->

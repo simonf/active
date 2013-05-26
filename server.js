@@ -79,6 +79,16 @@
     return db.delActivity(req.params.id, res);
   });
 
+  app.get('/changeCategory/:from/:to', function(req, res) {
+    console.log("Change category from " + req.params.from + " to " + req.params.to);
+    return db.renameCategory(req, res);
+  });
+
+  app.get('/changeActivity/:from/:to', function(req, res) {
+    console.log("Change activity from " + req.params.from + " to " + req.params.to);
+    return db.renameAction(req, res);
+  });
+
   app.get('/check_un/:un', function(req, res) {
     return db.check_un(req.params.un, res);
   });

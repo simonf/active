@@ -67,6 +67,16 @@ app.del '/activities/:id', (req,res) ->
 	console.log req
 	db.delActivity req.params.id,res
 
+#Change a category
+app.get '/changeCategory/:from/:to', (req,res) ->
+	console.log "Change category from #{req.params.from} to #{req.params.to}"
+	db.renameCategory(req,res)
+
+#Change an activity
+app.get '/changeActivity/:from/:to', (req,res) ->
+	console.log "Change activity from #{req.params.from} to #{req.params.to}"
+	db.renameAction(req,res)
+
 #Check login username
 app.get '/check_un/:un', (req,res) ->
 	db.check_un req.params.un, res
