@@ -4,6 +4,9 @@ body {
 a {
   color: #ff9500; }
 
+h2 {
+  font-size: 18px; }
+
 div#content {
   font-family: Verdana, Geneva, sans-serif;
   font-size: 16px;
@@ -196,3 +199,11 @@ h3.chartTitle a {
   color: black;
   font-size: 10px;
   text-decoration: none; }
+
+div#cat-change, div#act-change {
+  width: 100%; }
+  div#cat-change span, div#act-change span {
+    display: inline-block;
+    width: 25%; }
+  div#cat-change label, div#act-change label {
+    width: 50%; }
