@@ -196,6 +196,16 @@ root.getActionCategories = (req,resp) ->
 		return
 	return
 
+formatCSVRow = (rowarr) ->
+	#remove the username
+	rowarr.shift()
+	#reformat the date
+	d = new Date rowarr[0]
+	d2 = "#{d.getFullYear()}-#{d.getMonth()+1}-#{d.getDate()}"
+	rowarr[0]=d2
+	return rowarr.join()+"\n"
+
+
 root.getCommaDelimited = (req, resp) ->
 	usr = getUserFromSession(req)
 	database.view 'activity/all_byuser', (err,dat) ->
@@ -205,7 +215,7 @@ root.getCommaDelimited = (req, resp) ->
 			resp.contentType('text/csv')
 			for couchRow in dat.rows
 				if couchRow.key[0]==usr
-					resp.write couchRow.key.join()+"\n"
+					resp.write formatCSVRow couchRow.key
 			resp.end()
 		return
 	return
