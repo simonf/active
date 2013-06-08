@@ -79,6 +79,18 @@
       d.setMilliseconds(0);
       return d;
     },
+    dayNow: function() {
+      var d;
+      d = new Date();
+      return "" + (d.getFullYear()) + "-" + (d.getMonth() + 1) + "-" + (d.getDate());
+    },
+    dayYesterday: function() {
+      var d, d1, dv;
+      d1 = new Date();
+      dv = d1.getTime() - (24 * 3600 * 1000);
+      d = new Date(dv);
+      return "" + (d.getFullYear()) + "-" + (d.getMonth() + 1) + "-" + (d.getDate());
+    },
     timeNow: function() {
       var d, h, m;
       d = new Date();

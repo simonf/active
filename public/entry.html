@@ -1,0 +1,47 @@
+<html>
+	<head>
+		<title>Activity Entry</title>
+		<link href='http://fonts.googleapis.com/css?family=ABeeZee' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" href="css/ui-lightness/jquery-ui-1.8.17.custom.css"/>
+		<link rel="stylesheet" type="text/css" href="css/entry.css">
+	</head>
+	<body>
+		<div id="main">
+			<header>
+				<img id="bannerimg" src="img/lilyjennylake.png" alt="Activity banner">
+				<h1>Activities</h1>
+				<ul class="links">
+					<li><a href="index.html">Home</a></li>
+				</ul>
+				<div class="login">
+						<span id="preamble">Logged in as </span>
+						<span id="logged-in-username">no-one</span>
+				</div>
+				<span id="exitimg"><a href="/logout"><img src="img/exitwhite.png" alt="Exit"></a></span>
+			</header>
+			<form id="entry-form" action="entry_submit" method="get" accept-charset="utf-8">
+				<label for="action-in">Action</label>
+				<input class="text-input" id="action-in" type="text" name="action">
+				<label for="category-in">Category</label>
+				<input class="text-input" id="category-in" type="text" name="category">
+				<label for="quantity-in">Quantity</label>
+				<input class="text-input submit-on-enter" id="quantity-in" type="text" name="quantity">
+				<label>Date</label>
+				<input class="text-input" id="otherdt" type="text" name="other_date" value="" placeholder="YYYY-MM-DD">
+			</form>				
+			<div id="date-buttons">
+				<input type="radio" name="date" value="today" checked="checked" id="today-rb">Today
+				<input type="radio" name="date" value="yesterday" id="yesterday-rb">Yesterday
+			</div>
+			<button class="default-button" type="submit" form="entry-form" value="Add">Add</button>
+		</div>
+		<script src="lib/jquery-1.8.0.min.js" type="text/javascript"></script>
+		<script src="lib/jquery-ui-1.8.23.custom.min.js" type="text/javascript"></script>
+		<script src="lib/jquery.cookie.js" type="text/javascript"></script>
+		<script src="lib/jquery.inlinecomplete.js" type="text/javascript"></script>
+		<script src="scripts/cookie.js" type="text/javascript" charset="utf-8" async defer></script>
+		<script src="scripts/simple.js" type="text/javascript" charset="utf-8" async defer></script>
+		<script src="scripts/sfutils.js" type="text/javascript" charset="utf-8" async defer></script>
+		<script src="scripts/entry.js" type="text/javascript" charset="utf-8" async defer></script>
+	</body>
+</html>

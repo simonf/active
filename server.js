@@ -26,6 +26,14 @@
     }
   });
 
+  app.use('/public/entry.html', function(req, res, next) {
+    if (req.session.user) {
+      return next();
+    } else {
+      return res.redirect("http://" + req.host + "/public/login.html");
+    }
+  });
+
   app.use('/public', express["static"](__dirname + '/public'));
 
   app.use('/favicon.ico', express["static"](__dirname + '/public/img/favicon.ico'));

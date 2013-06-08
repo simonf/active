@@ -15,6 +15,12 @@ app.use '/public/index.html', (req,res,next) ->
 	else
 	   res.redirect "http://#{req.host}/public/login.html"
 
+app.use '/public/entry.html', (req,res,next) ->
+	if req.session.user
+	   next()
+	else
+	   res.redirect "http://#{req.host}/public/login.html"
+
 app.use '/public', express.static __dirname + '/public'
 app.use '/favicon.ico', express.static __dirname + '/public/img/favicon.ico'
 

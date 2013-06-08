@@ -9,6 +9,7 @@
 fs = require('fs')
 n3 = require './n3'
 json = require('./public/lib/json2.min.js')
+formatter = require './formatter'
 server = "http://127.0.0.1"
 cradle = require('cradle')
 conn =  new(cradle.Connection)(server,5984,{cache: true, raw: false})
@@ -81,18 +82,19 @@ updateViews = (force) ->
 
 root.addActivity = (req, resp) ->
 	activity = req.body
-	activity.type = 'activity'
-	activity.updatedAt = new Date().getTime().toString() if activity.updatedAt == undefined
-	activity.user = getUserFromSession(req)
-	database.save(activity, (err,res) -> 
-		if (err)
-			console.log(err)
-			return
-		else 
-			resp.send {id: res.id}
-			return
-	)
+	activity = formatter.parseAndFixActivity activity
+	if activity.action != undefined and activity.action.length > 0
+		activity.user = getUserFromSession(req)
+		database.save(activity, (err,res) -> 
+			if (err)
+				console.log(err)
+				return
+			else 
+				resp.send {id: res.id}
+				return
+		)
 	return
+
 
 doUpdate = (activity,cb) ->
 	id = activity.id

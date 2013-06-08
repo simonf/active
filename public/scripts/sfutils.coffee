@@ -62,6 +62,18 @@ root.SFUtils = {
 		return d
 	,
 
+	dayNow: ->
+		d=new Date()
+		"#{d.getFullYear()}-#{d.getMonth()+1}-#{d.getDate()}"
+	,
+
+	dayYesterday: ->
+		d1=new Date()
+		dv = d1.getTime() - (24 * 3600 * 1000)
+		d = new Date(dv)
+		"#{d.getFullYear()}-#{d.getMonth()+1}-#{d.getDate()}"
+	,
+
 	timeNow: ->
 		d = new Date()
 		h = d.getHours()
