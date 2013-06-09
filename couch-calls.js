@@ -106,7 +106,6 @@
     activity = formatter.parseAndFixActivity(activity);
     if (activity.action !== void 0 && activity.action.length > 0) {
       activity.user = getUserFromSession(req);
-      console.log(activity);
       database.save(activity, function(err, res) {
         if (err) {
           console.log(err);

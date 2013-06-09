@@ -73,7 +73,6 @@
       return $('#otherdt').val(ds);
     });
     $('button.default-button').on('click', function(e) {
-      $('form').submit();
       return $('#action-in').focus();
     });
     $('form').on('submit', function() {

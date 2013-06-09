@@ -61,7 +61,6 @@ $ ->
 		$('#otherdt').val ds
 
 	$('button.default-button').on 'click', (e) ->
-		$('form').submit()
 		$('#action-in').focus()
 
 	# Submit action
