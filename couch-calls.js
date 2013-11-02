@@ -105,7 +105,11 @@
     activity = req.body;
     activity = formatter.parseAndFixActivity(activity);
     if (activity.action !== void 0 && activity.action.length > 0) {
-      activity.user = getUserFromSession(req);
+      if (activity.user === void 0) {
+        activity.user = 'simon';
+      }
+      console.log("Saving:");
+      console.log(activity);
       database.save(activity, function(err, res) {
         if (err) {
           console.log(err);
@@ -195,6 +199,9 @@
   root.getCategories = function(req, resp) {
     var options, usr;
     usr = getUserFromSession(req);
+    if (usr === void 0) {
+      usr = 'simon';
+    }
     options = {
       group: true,
       startkey: [usr],
@@ -228,6 +235,9 @@
   root.getActionCategories = function(req, resp) {
     var options, usr;
     usr = getUserFromSession(req);
+    if (usr === void 0) {
+      usr = 'simon';
+    }
     options = {
       group: true,
       startkey: [usr],

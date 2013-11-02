@@ -60,6 +60,7 @@ app.get '/activities/:id', (req, res) ->
 
 #Create an activity
 app.post '/activities', (req,res) ->
+	console.log "Received: "
 	console.log req.body
 	db.addActivity req,res
 

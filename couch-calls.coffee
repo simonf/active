@@ -84,7 +84,9 @@ root.addActivity = (req, resp) ->
 	activity = req.body
 	activity = formatter.parseAndFixActivity activity
 	if activity.action != undefined and activity.action.length > 0
-		activity.user = getUserFromSession(req)
+		activity.user = 'simon' if activity.user == undefined
+		console.log "Saving:"
+		console.log activity
 		database.save(activity, (err,res) -> 
 			if (err)
 				console.log(err)
@@ -158,6 +160,7 @@ root.getPagedActivities = (req,resp) ->
 
 root.getCategories = (req,resp) ->
 	usr = getUserFromSession(req)
+	usr = 'simon' if usr == undefined
 	options = {group: true, startkey: [usr], endkey: [usr,{}]}
 	database.view 'activity/distinct_usercategory',options, (err,dat) ->
 		if err
@@ -187,6 +190,7 @@ root.getCategoryEvents = (req,resp) ->
 
 root.getActionCategories = (req,resp) ->
 	usr = getUserFromSession(req)
+	usr = 'simon' if usr == undefined
 	options = {group: true, startkey: [usr], endkey: [usr,{}]}
 	#console.log req.query
 	database.view 'activity/distinct_useractioncategory',options, (err,dat) ->

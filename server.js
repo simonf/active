@@ -73,6 +73,7 @@
   });
 
   app.post('/activities', function(req, res) {
+    console.log("Received: ");
     console.log(req.body);
     return db.addActivity(req, res);
   });
