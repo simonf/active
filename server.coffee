@@ -1,4 +1,5 @@
 db = require('./couch-calls')
+suggest = require('./suggest')
 express = require('express')
 #cookies = require('cookies').express
 
@@ -83,6 +84,11 @@ app.get '/changeCategory/:from/:to', (req,res) ->
 app.get '/changeActivity/:from/:to', (req,res) ->
 	console.log "Change activity from #{req.params.from} to #{req.params.to}"
 	db.renameAction(req,res)
+
+#Get suggestions
+app.get '/suggestions', (req,res) ->
+	console.log "Suggesting"
+	suggest.suggest(req,res)
 
 #Check login username
 app.get '/check_un/:un', (req,res) ->
