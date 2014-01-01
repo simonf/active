@@ -8,44 +8,69 @@ root.suggest = (req,resp) ->
 	lastthreeweeks=[]
 	# separate out today's events
 	db.getToday req, (t) ->
-		today=t
-		db.getLastFiveDays req, (five) ->
-			lastfivedays=removematches today, normalisevalues(five)
-			resp.send makeCandidates lastfivedays
+		if t is null or t is undefined
+			console.log "No actions found for today"
+		else
+			today=t
+			# console.log "#{t.length} actions so far today"
+		db.getLastFiveDays req, true, (five) ->
+			lastfivedays=removematches today, moreFrequentThan(five.rows,4)
+			makeCandidates req, resp, lastfivedays
 	return
 
-makeCandidates = (catactionarray) ->
-	retval = []
-	for item in catactionarray
-		u=""
-		for k, v of item
-			if k != 'unit'
-				for kk, vv of v
-			        category = k
-					action = kk
-					if vv.length > 2
-						retval.push { "category": category, "action": action, "quantity": mostFrequent(vv), "units": item["unit"]}
-	return retval
+makeCandidates = (req, resp, catactionarray) ->
+	db.getLastFiveDays req, false, (items) ->
+		vlist=[]
+		for ca in catactionarray
+			values=[]
+			units="" 
+			for item in items
+				if arrayEqual(ca, item.key)
+					values.push item.value[0]
+					units=item.value[1]
+			vlist.push {"category": ca[0], "action":ca[1], "quantity": mostFrequent(values), "units": units}
+		resp.send vlist
+	return
 
 mostFrequent = (valarray) ->
-	rv={}
+	rv = {}
 	max = 0
 	maxv = ""
-	for v in valarray
-	    rv[v] = (if rv[v] is undefined then 1 else rv[v]+1)
-	    if rv[v] > max
-	       max = rv[v]
-	       maxv = v
+	for val in valarray
+		if rv[val] is undefined
+			rv[val]=1
+		else
+			rv[val] = rv[val]+1
+		if rv[val] > max
+			max = rv[val]
+			maxv = val
 	return maxv
+
+moreFrequentThan = (valarray,num) ->
+	retval = []
+	for v in valarray
+	    retval.push v.key if v.value >= num
+	return retval
 
 normalisevalues = (keyvaluearray) ->
 	(item.value for item in keyvaluearray)
 
 removematches = (tomatch,list) ->
-	list.filter (x) -> (z.k for z in tomatch when arrayEqual z.k, x.k).length == 0		
+	if tomatch is null or tomatch.length==0
+		# console.log "Nothing to match"
+		return list
+	else
+		# filter will return true only for items in list that are not in tomatch
+		# console.log "Filtering"
+		return list.filter (x) -> (z.key for z in tomatch when arrayEqual z.key, x).length == 0		
 	
 arrayEqual = (a, b) ->
-	a.length is b.length and a.every (elem, i) -> elem is b[i]
+	if typeof a is 'object' and typeof b is 'object'
+		return (a.length is b.length and a.every (elem, i) -> elem is b[i])
+	else
+		# console.log a
+		console.log "Can't match values that are not arrays: #{a}, #{b}"
+		return false
 	
 todayStartAsMillis = ->
 	d=new Date()

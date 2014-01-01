@@ -50,7 +50,7 @@ root.ListView = Backbone.View.extend {
 	# Only called once per page load
 	initialize: ->
 		# Ensure "this" means what it should mean in the following functions
-		_.bindAll this,'render', 'addItem', 'appendItem', 'prependItem', 'updateItem'
+		_.bindAll this,'render', 'addItem', 'appendItem', 'prependItem', 'updateItem', 'getItemFromForm', 'addClicked'
 		# create a holder for the list of items
 		this.collection = new List()
 		# whenever an item is added to the collection, call prependItem
@@ -104,8 +104,22 @@ root.ListView = Backbone.View.extend {
 		$('#ts-in').val('')
 		return
 	,
+	addClicked: ->
+		item = this.getItemFromForm()
+		this.addItem item
+		return
+	,
 	# Add a new item based on what is in the input form
-	addItem: ->
+	addItem: (item) ->
+		if item != null
+			this.collection.add(item) # results in a call to appendItem (bound in initialize, above)
+			item.save()
+			# reset the focus
+			$('#action-in').focus()
+		return
+	,
+	#Parse an item from the form
+	getItemFromForm: ->
 		item = new Item()
 		#parse input field for quantity and units
 		qu = SFUtils.splitNumbersAndUnits $('#quantity-in').val()
@@ -128,11 +142,9 @@ root.ListView = Backbone.View.extend {
 					ds = $.datepicker.parseDate("yy-mm-dd",explicitDate)
 					item.set {updatedAt: ds.getTime().toString()}
 			this.clearInput()
-			this.collection.add(item) # results in a call to appendItem (bound in initialize, above)
-			item.save()
-			# reset the focus
-			$('#action-in').focus()
-		return
+			return item
+		else
+			return null
 	,
 	# Update an item's values after editing. Called on keypress in any edit field
 	updateItem: (e) ->
@@ -154,7 +166,7 @@ root.ListView = Backbone.View.extend {
 	,
 	# Bind some DOM events to functions
 	events: {
-		'click button#add': 'addItem',
+		'click button#add': 'addClicked',
 		'keypress': 'updateItem'
 	}
 }

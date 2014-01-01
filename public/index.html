@@ -41,10 +41,26 @@
 					<input id="yesterday-in" type="checkbox" name="yesterday-in" value="yesterday"/>
 					<label for="ts-in">When</label>
 					<input id="ts-in" type="text"/>
-					<button type="button" id="add" class="default-button">Add</button>
+					<button type="button" class="default-button" id="calc-daily">Daily</button>
+					<button type="button" id="add-button" class="default-button">Add</button> 
 				</form> 
 				<div id="navbuttons">
-					<a id="pre-page" href="#">&lt;Prev</a><a id="nxt-page" href="#">Next&gt;</a>
+					<span><a id="pre-page" href="#">&lt;Prev</a><a id="nxt-page" href="#">Next&gt;</a></span>
+				</div>
+				<div id="bulk_entry">
+					<span id="bulk_close"><img src="img/cross_48.png"></span>
+					<form method="post" action="#">
+						<table id="bulk_table">
+							<thead>
+								<tr>
+									<th>Category</th><th>Action</th><th>Quantity</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+						<button id="bulk_submit">Add</button>
+					</form>
 				</div>
 				<div id="list-table">
 					<div class="activity-row">
@@ -98,6 +114,7 @@
 		<script src="scripts/cookie.js" type="text/javascript"></script>
 		<script src="scripts/sfutils.js" type="text/javascript"></script>
 		<script src="scripts/simple.js" type="text/javascript"></script>
+		<script src="scripts/bulk.js" type="text/javascript"></script>
 		<script src="scripts/models.js" type="text/javascript"></script>
 		<script src="scripts/views.js" type="text/javascript"></script>
 		<script src="scripts/active.js" type="text/javascript"></script>

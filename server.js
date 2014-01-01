@@ -75,8 +75,6 @@
   });
 
   app.post('/activities', function(req, res) {
-    console.log("Received: ");
-    console.log(req.body);
     return db.addActivity(req, res);
   });
 
@@ -101,8 +99,13 @@
   });
 
   app.get('/suggestions', function(req, res) {
-    console.log("Suggesting");
     return suggest.suggest(req, res);
+  });
+
+  app.get('/today', function(req, res) {
+    return db.getToday(req, function(dat) {
+      return res.send(dat);
+    });
   });
 
   app.get('/check_un/:un', function(req, res) {

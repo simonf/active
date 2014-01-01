@@ -15,8 +15,14 @@ root.SimpleClient = {
 			handleDataFunc(dat)
 		return
 	,
-	postNewActivity: (a, c, q, u, t) ->
-		$.post('/activities',{ action: a, category: c, quantity: q, units: u, updatedAt: t })
+	postNewActivity: (a, c, q, u, t, o) ->
+		$.post('/activities',{ action: a, category: c, quantity: q, units: u, updatedAt: t, user: o })
+		return
+	,
+	getSuggestions: (handleDataFunc) ->
+		url='/suggestions'
+		$.get url,(dat) ->
+			handleDataFunc(dat)
 		return
 }
 

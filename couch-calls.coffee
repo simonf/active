@@ -225,15 +225,16 @@ root.getToday = (req, callback) ->
 	return
 
 	
-root.getLastFiveDays = (req, callback) ->
+root.getLastFiveDays = (req, shouldReduce, callback) ->
 	usr = getUserFromSession(req)
 	usr = 'simon' if usr == undefined
-	options = {group: true, reduce: true}
+	options = {group: true, reduce: true} if shouldReduce
+	options = {reduce: false} if not shouldReduce
 	database.view 'activity/last_five_days',options, (err,dat) ->
 		if err
 			callback JSON.stringify err
 		else
-			#console.log dat
+			# console.log dat
 			callback dat
 		return
 	return

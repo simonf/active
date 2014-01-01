@@ -270,16 +270,23 @@
     });
   };
 
-  root.getLastFiveDays = function(req, callback) {
+  root.getLastFiveDays = function(req, shouldReduce, callback) {
     var options, usr;
     usr = getUserFromSession(req);
     if (usr === void 0) {
       usr = 'simon';
     }
-    options = {
-      group: true,
-      reduce: true
-    };
+    if (shouldReduce) {
+      options = {
+        group: true,
+        reduce: true
+      };
+    }
+    if (!shouldReduce) {
+      options = {
+        reduce: false
+      };
+    }
     database.view('activity/last_five_days', options, function(err, dat) {
       if (err) {
         callback(JSON.stringify(err));
