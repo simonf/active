@@ -1,4 +1,5 @@
 ./couch-calls.js
+./suggest.js
 ./db.ini
 ./formatter.js
 ./n3.js
@@ -46,6 +47,7 @@
 ./public/lib/json2.min.js
 ./public/lib/underscore.js
 ./public/scripts/active.js
+./public/scripts/bulk.js
 ./public/scripts/chart.js
 ./public/scripts/cookie.js
 ./public/scripts/entry.js
