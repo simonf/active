@@ -55,6 +55,23 @@ $ ->
 		listView.collection.getPrevPage()
 	$('#nxt-page').on 'click', ->
 		listView.collection.getNextPage();
+
+	#Suggestions
+	$('span#bulk_close').on 'click', ->
+		$('div#bulk_entry').hide()
+		return
+
+	$('button#calc-daily').on 'click', (e) ->
+		DoBulk.showSuggestions()
+		return
+
+	$('button#bulk_submit').on 'click', (e) ->
+		DoBulk.saveSuggestions()
+		return false
+
+	$('#new-item-form').on 'submit', (e) ->
+		e.preventDefault()
+
 	# Treat <Enter> keypress in any form input field the same as clicking on the "Add item" button
 	$('.submit-on-enter').on 'keypress', (e) ->
 		if (e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)

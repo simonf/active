@@ -47,7 +47,7 @@
     el: $('#main'),
     initialize: function() {
       var _this = this;
-      _.bindAll(this, 'render', 'addItem', 'appendItem', 'prependItem', 'updateItem');
+      _.bindAll(this, 'render', 'addItem', 'appendItem', 'prependItem', 'updateItem', 'getItemFromForm', 'addClicked');
       this.collection = new List();
       this.collection.bind('add', this.prependItem);
       this.collection.bind('draw', this.render);
@@ -85,7 +85,19 @@
       $('#quantity-in').val(' ');
       $('#ts-in').val('');
     },
-    addItem: function() {
+    addClicked: function() {
+      var item;
+      item = this.getItemFromForm();
+      this.addItem(item);
+    },
+    addItem: function(item) {
+      if (item !== null) {
+        this.collection.add(item);
+        item.save();
+        $('#action-in').focus();
+      }
+    },
+    getItemFromForm: function() {
       var ds, explicitDate, inputaction, item, qu;
       item = new Item();
       qu = SFUtils.splitNumbersAndUnits($('#quantity-in').val());
@@ -113,9 +125,9 @@
           }
         }
         this.clearInput();
-        this.collection.add(item);
-        item.save();
-        $('#action-in').focus();
+        return item;
+      } else {
+        return null;
       }
     },
     updateItem: function(e) {
@@ -146,7 +158,7 @@
       mod.change();
     },
     events: {
-      'click button#add': 'addItem',
+      'click button#add': 'addClicked',
       'keypress': 'updateItem'
     }
   });

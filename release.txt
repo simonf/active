@@ -1,14 +1,17 @@
 ./couch-calls.js
 ./db.ini
-./server.js
+./formatter.js
 ./n3.js
+./server.js
 ./view-definitions.json
 ./public/charts.html
+./public/entry.html
 ./public/index.html
 ./public/login.html
 ./public/mob.html
 ./public/maintenance.html
 ./public/css/active.css
+./public/css/entry.css
 ./public/css/login.css
 ./public/css/mobile.css
 ./public/css/orig.css
@@ -29,7 +32,9 @@
 ./public/css/ui-lightness/images/ui-icons_ffffff_256x240.png
 ./public/img/alert-overlay.png
 ./public/img/cross_48.png
+./public/img/exitwhite.png
 ./public/img/desert1a.png
+./public/img/lilyjennylake.png
 ./public/img/tarmac.png
 ./public/lib/backbone.js
 ./public/lib/date.js
@@ -43,6 +48,7 @@
 ./public/scripts/active.js
 ./public/scripts/chart.js
 ./public/scripts/cookie.js
+./public/scripts/entry.js
 ./public/scripts/login.js
 ./public/scripts/maint.js
 ./public/scripts/mob.js

@@ -77,6 +77,19 @@
     $('#nxt-page').on('click', function() {
       return listView.collection.getNextPage();
     });
+    $('span#bulk_close').on('click', function() {
+      $('div#bulk_entry').hide();
+    });
+    $('button#calc-daily').on('click', function(e) {
+      DoBulk.showSuggestions();
+    });
+    $('button#bulk_submit').on('click', function(e) {
+      DoBulk.saveSuggestions();
+      return false;
+    });
+    $('#new-item-form').on('submit', function(e) {
+      return e.preventDefault();
+    });
     $('.submit-on-enter').on('keypress', function(e) {
       if ((e.which && e.which === 13) || (e.keyCode && e.keyCode === 13)) {
         $('button.default-button').click();

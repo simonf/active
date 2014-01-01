@@ -1,4 +1,5 @@
 db = require('./couch-calls')
+suggest = require('./suggest')
 express = require('express')
 #cookies = require('cookies').express
 
@@ -60,7 +61,8 @@ app.get '/activities/:id', (req, res) ->
 
 #Create an activity
 app.post '/activities', (req,res) ->
-	console.log req.body
+	# console.log "Received: "
+	# console.log req.body
 	db.addActivity req,res
 
 #Update an activity
@@ -82,6 +84,14 @@ app.get '/changeCategory/:from/:to', (req,res) ->
 app.get '/changeActivity/:from/:to', (req,res) ->
 	console.log "Change activity from #{req.params.from} to #{req.params.to}"
 	db.renameAction(req,res)
+
+#Get suggestions
+app.get '/suggestions', (req,res) ->
+	suggest.suggest(req,res)
+
+app.get '/today', (req,res) ->
+	db.getToday req, (dat) ->
+		res.send dat
 
 #Check login username
 app.get '/check_un/:un', (req,res) ->

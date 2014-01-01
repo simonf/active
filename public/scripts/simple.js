@@ -28,13 +28,21 @@
         return handleDataFunc(dat);
       });
     },
-    postNewActivity: function(a, c, q, u, t) {
+    postNewActivity: function(a, c, q, u, t, o) {
       $.post('/activities', {
         action: a,
         category: c,
         quantity: q,
         units: u,
-        updatedAt: t
+        updatedAt: t,
+        user: o
+      });
+    },
+    getSuggestions: function(handleDataFunc) {
+      var url;
+      url = '/suggestions';
+      $.get(url, function(dat) {
+        return handleDataFunc(dat);
       });
     }
   };

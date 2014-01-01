@@ -1,4 +1,3 @@
-# 
 # Uses the following Couch views:
 # activity/user-bydate
 # activity/distinct_usercategory
@@ -12,6 +11,7 @@ json = require('./public/lib/json2.min.js')
 formatter = require './formatter'
 server = "http://127.0.0.1"
 cradle = require('cradle')
+suggest = require './suggest'
 conn =  new(cradle.Connection)(server,5984,{cache: true, raw: false})
 database =  conn.database('activities')
 
@@ -84,7 +84,9 @@ root.addActivity = (req, resp) ->
 	activity = req.body
 	activity = formatter.parseAndFixActivity activity
 	if activity.action != undefined and activity.action.length > 0
-		activity.user = getUserFromSession(req)
+		activity.user = 'simon' if activity.user == undefined
+		console.log "Saving:"
+		console.log activity
 		database.save(activity, (err,res) -> 
 			if (err)
 				console.log(err)
@@ -134,6 +136,19 @@ root.getActivity = (id, resp) ->
 		return
 	return
 
+# root.suggest = (req,resp) ->
+# 	usr = getUserFromSession(req)
+# 	options = {descending: true, startkey: [usr,{}], endkey: [usr], limit: 400} 
+# 	database.view 'activity/user-bydate', options, (err, dat) ->
+# 		if err
+# 			console.log err
+# 			resp.send JSON.stringify err
+# 		else
+# 			resp.send suggest.suggest dat
+# 		return
+# 	return
+# 
+	
 root.getPagedActivities = (req,resp) ->
 	usr = getUserFromSession(req)
 	options = {descending: true} 
@@ -148,16 +163,13 @@ root.getPagedActivities = (req,resp) ->
 			console.log err
 			resp.send JSON.stringify err
 		else
-			#console.log dat.length
-			#if dat.length>0
-				#console.log dat[0].key
-				#console.log dat[dat.length-1].key
 			resp.send dat
 		return
 	return
 
 root.getCategories = (req,resp) ->
 	usr = getUserFromSession(req)
+	usr = 'simon' if usr == undefined
 	options = {group: true, startkey: [usr], endkey: [usr,{}]}
 	database.view 'activity/distinct_usercategory',options, (err,dat) ->
 		if err
@@ -187,6 +199,7 @@ root.getCategoryEvents = (req,resp) ->
 
 root.getActionCategories = (req,resp) ->
 	usr = getUserFromSession(req)
+	usr = 'simon' if usr == undefined
 	options = {group: true, startkey: [usr], endkey: [usr,{}]}
 	#console.log req.query
 	database.view 'activity/distinct_useractioncategory',options, (err,dat) ->
@@ -195,6 +208,34 @@ root.getActionCategories = (req,resp) ->
 		else
 			#console.log dat
 			resp.send dat
+		return
+	return
+
+root.getToday = (req, callback) ->
+	usr = getUserFromSession(req)
+	usr = 'simon' if usr == undefined
+	options = {}
+	database.view 'activity/today',options, (err,dat) ->
+		if err
+			callback JSON.stringify err
+		else
+			#console.log dat
+			callback dat
+		return
+	return
+
+	
+root.getLastFiveDays = (req, shouldReduce, callback) ->
+	usr = getUserFromSession(req)
+	usr = 'simon' if usr == undefined
+	options = {group: true, reduce: true} if shouldReduce
+	options = {reduce: false} if not shouldReduce
+	database.view 'activity/last_five_days',options, (err,dat) ->
+		if err
+			callback JSON.stringify err
+		else
+			# console.log dat
+			callback dat
 		return
 	return
 

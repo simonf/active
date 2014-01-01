@@ -15,6 +15,26 @@
 		font-size: 18px;
 	}
 
+	div#bulk_entry {
+		position: absolute;
+		left: 100px;
+		top: 100px;
+		display: none;
+		background: white;
+		border: solid black 1px;
+	}
+	
+	span#bulk_close {
+		display: block;
+		position: absolute;
+		top: 0px;
+		right: 0px;
+		img {
+			height: 20px;
+			width: 20px;
+		}
+	}
+
 	div#content {
 		font-family: Verdana, Geneva, sans-serif;
 		font-size: 16px;
@@ -103,7 +123,6 @@
 
 	.default-button {
 		background: $dark-brown url(../img/alert-overlay.png) repeat-x;
-		float: right; 
 		display: inline-block;
 		margin-left: 100px;
 /*		margin-right: 10%;	*/
@@ -126,6 +145,10 @@
 			color: $dark-brown;
 		}
 	}
+
+	button#add-button {
+		float: right;
+	}
 	
 	a#nxt-page {
 		color: black;
@@ -137,6 +160,8 @@
 		color: black;		
 	}
 
+	button#calc-daily {
+	}
 
 	div#list-table {
 		border: 0;
