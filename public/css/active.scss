@@ -120,8 +120,8 @@
 	#units-in {
 		width: 10em;
 	}
-
-	.default-button {
+	
+	.nice-button {
 		background: $dark-brown url(../img/alert-overlay.png) repeat-x;
 		display: inline-block;
 		margin-left: 100px;
@@ -144,6 +144,10 @@
 			background-color: $bright-orange;
 			color: $dark-brown;
 		}
+	}
+	
+	.default-button {
+		@extend .nice-button
 	}
 
 	button#add-button {

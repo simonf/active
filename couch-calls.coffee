@@ -85,8 +85,8 @@ root.addActivity = (req, resp) ->
 	activity = formatter.parseAndFixActivity activity
 	if activity.action != undefined and activity.action.length > 0
 		activity.user = 'simon' if activity.user == undefined
-		console.log "Saving:"
-		console.log activity
+		# console.log "Saving:"
+		# console.log activity
 		database.save(activity, (err,res) -> 
 			if (err)
 				console.log(err)

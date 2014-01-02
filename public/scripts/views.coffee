@@ -166,7 +166,7 @@ root.ListView = Backbone.View.extend {
 	,
 	# Bind some DOM events to functions
 	events: {
-		'click button#add': 'addClicked',
+		'click button#add-button': 'addClicked',
 		'keypress': 'updateItem'
 	}
 }

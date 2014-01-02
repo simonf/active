@@ -107,7 +107,6 @@
     activity = req.body;
     activity = formatter.parseAndFixActivity(activity);
     if (activity.action !== void 0 && activity.action.length > 0) {
-      activity.user = getUserFromSession(req);
       if (activity.user === void 0) {
         activity.user = 'simon';
       }

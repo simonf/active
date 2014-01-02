@@ -158,7 +158,7 @@
       mod.change();
     },
     events: {
-      'click button#add': 'addClicked',
+      'click button#add-button': 'addClicked',
       'keypress': 'updateItem'
     }
   });
