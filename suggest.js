@@ -86,7 +86,9 @@
   uniqueCategoryAction = function(dat) {
     var caqu, item, matched, obj, ucaobjectarray, _i, _j, _len, _len1;
     caqu = doubleshift(dat);
-    console.log(caqu);
+    if (debug === true) {
+      console.log(caqu);
+    }
     ucaobjectarray = [];
     for (_i = 0, _len = caqu.length; _i < _len; _i++) {
       item = caqu[_i];

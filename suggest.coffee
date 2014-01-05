@@ -51,7 +51,7 @@ moreFrequentThan = (valarray,num) ->
 
 uniqueCategoryAction = (dat) ->
 	caqu = doubleshift dat
-	console.log caqu
+	console.log caqu if debug is true
 	ucaobjectarray = []
 	for item in caqu
 		console.log "processing item" if debug is true

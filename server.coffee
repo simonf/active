@@ -61,18 +61,18 @@ app.get '/activities/:id', (req, res) ->
 
 #Create an activity
 app.post '/activities', (req,res) ->
-	# console.log "Received: "
-	# console.log req.body
+	console.log "Received: "
+	#console.log req.body
 	db.addActivity req,res
 
 #Update an activity
 app.put '/activities/:id', (req, res) ->
-	console.log req.body
+	#console.log req.body
 	db.updateActivity req.body,res
 
 #Allow deletions
 app.del '/activities/:id', (req,res) ->
-	console.log req
+	#console.log req
 	db.delActivity req.params.id,res
 
 #Change a category
@@ -99,7 +99,7 @@ app.get '/check_un/:un', (req,res) ->
 
 #Log in
 app.post '/login', (req,res) ->
-	console.log req.body
+	#console.log req.body
 	db.check_unpw req, res
 
 #Log out

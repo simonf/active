@@ -277,7 +277,6 @@
         console.log("getToday: " + (JSON.stringify(err)));
         callback(JSON.stringify(err));
       } else {
-        console.log("getToday: " + dat);
         callback(dat);
       }
     });
@@ -300,7 +299,6 @@
         console.log("getLastFiveDays error: " + (JSON.stringify(err)));
         callback(JSON.stringify(err));
       } else {
-        console.log("getLastFiveDays: " + dat);
         callback(dat);
       }
     });

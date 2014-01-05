@@ -75,16 +75,15 @@
   });
 
   app.post('/activities', function(req, res) {
+    console.log("Received: ");
     return db.addActivity(req, res);
   });
 
   app.put('/activities/:id', function(req, res) {
-    console.log(req.body);
     return db.updateActivity(req.body, res);
   });
 
   app.del('/activities/:id', function(req, res) {
-    console.log(req);
     return db.delActivity(req.params.id, res);
   });
 
@@ -113,7 +112,6 @@
   });
 
   app.post('/login', function(req, res) {
-    console.log(req.body);
     return db.check_unpw(req, res);
   });
 
