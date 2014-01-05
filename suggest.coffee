@@ -2,34 +2,34 @@ db = require('./couch-calls')
 
 root = exports ? this
 
+debug=false
+
 root.suggest = (req,resp) ->
 	today=[]
 	lastfivedays=[]
 	lastthreeweeks=[]
 	# separate out today's events
 	db.getToday req, (t) ->
-		if t is null or t is undefined
-			console.log "No actions found for today"
+		if t is null or t is undefined or t.rows is undefined
+			console.log "No actions found for today" if debug is true
 		else
-			today=t
-			# console.log "#{t.length} actions so far today"
-		db.getLastFiveDays req, true, (five) ->
-			lastfivedays=removematches today, moreFrequentThan(five.rows,4)
-			makeCandidates req, resp, lastfivedays
+			today=uniqueCategoryAction t
+			console.log "#{t.rows.length} actions so far today" if debug is true
+		db.getLastFiveDays req,(five) ->
+			console.log "#{five.rows.length} actions in the last 5 days" if debug is true
+			f = uniqueCategoryAction five
+			console.log "#{f.length} unique actions" if debug is true
+			lastfivedays=removematches today, moreFrequentThan(f,4)
+			console.log "#{lastfivedays.length} remain" if debug is true
+			makeCandidates resp, lastfivedays
+		return
 	return
 
-makeCandidates = (req, resp, catactionarray) ->
-	db.getLastFiveDays req, false, (items) ->
-		vlist=[]
-		for ca in catactionarray
-			values=[]
-			units="" 
-			for item in items
-				if arrayEqual(ca, item.key)
-					values.push item.value[0]
-					units=item.value[1]
-			vlist.push {"category": ca[0], "action":ca[1], "quantity": mostFrequent(values), "units": units}
-		resp.send vlist
+makeCandidates = (resp, catactionobjarray) ->
+	vlist=[]
+	for ca in catactionobjarray
+		vlist.push {"category": ca.key.category, "action":ca.key.action, "quantity": mostFrequent(ca.values), "units": ca.units}
+	resp.send vlist
 	return
 
 mostFrequent = (valarray) ->
@@ -47,26 +47,47 @@ mostFrequent = (valarray) ->
 	return maxv
 
 moreFrequentThan = (valarray,num) ->
-	retval = []
-	for v in valarray
-	    retval.push v.key if v.value >= num
-	return retval
+	return valarray.filter (x) -> x.count >= num
 
-normalisevalues = (keyvaluearray) ->
-	(item.value for item in keyvaluearray)
+uniqueCategoryAction = (dat) ->
+	caqu = doubleshift dat
+	console.log caqu
+	ucaobjectarray = []
+	for item in caqu
+		console.log "processing item" if debug is true
+		matched = false
+		for obj in ucaobjectarray
+			if not matched and obj.key.category is item.key[0] and obj.key.action is item.key[1]
+				obj.count += 1
+				obj.values.push item.key[2]
+				obj.units = item.key[3]
+				matched = true
+		if not matched
+			obj = {"key":{"category": item.key[0],"action": item.key[1]}, "count": 1, "values":[item.key[2]],"units": item.key[3]}
+			ucaobjectarray.push obj
+			console.log "added #{obj}" if debug is true
+	return ucaobjectarray
+	
+	
+doubleshift = (dat) ->
+	for d in dat.rows
+		d.key.shift()
+		d.key.shift()
+	dat
 
 removematches = (tomatch,list) ->
 	if tomatch is null or tomatch.length==0
-		# console.log "Nothing to match"
+		console.log "Nothing to match" if debug is true
 		return list
 	else
 		# filter will return true only for items in list that are not in tomatch
-		# console.log "Filtering"
-		return list.filter (x) -> (z.key for z in tomatch when arrayEqual z.key, x).length == 0		
+		# for each item in list, it returns true to the filter only when there is no matching key in tomatch
+		console.log "Filtering #{list.length} unique 5-day entries vs #{tomatch.length} unique entries today" if debug is true
+		return list.filter (x) -> (z for z in tomatch when keyEqual(z.key,x.key)).length == 0		
 	
-arrayEqual = (a, b) ->
+keyEqual = (a, b) ->
 	if typeof a is 'object' and typeof b is 'object'
-		return (a.length is b.length and a.every (elem, i) -> elem is b[i])
+		return (a.category is b.category and a.action is b.action)
 	else
 		# console.log a
 		console.log "Can't match values that are not arrays: #{a}, #{b}"

@@ -211,30 +211,42 @@ root.getActionCategories = (req,resp) ->
 		return
 	return
 
+makeMidnight = ->
+	dt = new Date()
+	dt.setHours 0
+	dt.setMinutes 0
+	dt.setSeconds 0
+	dt.setMilliseconds 0
+	return dt.getTime()
+
 root.getToday = (req, callback) ->
 	usr = getUserFromSession(req)
 	usr = 'simon' if usr == undefined
-	options = {}
-	database.view 'activity/today',options, (err,dat) ->
+	dt = parseInt((makeMidnight()/86400000).toFixed(0))
+	options = {startkey:[usr,dt]}
+	database.view 'activity/user-bynumericdate',options, (err,dat) ->
 		if err
+			console.log "getToday: #{JSON.stringify err}"
 			callback JSON.stringify err
 		else
-			#console.log dat
+			console.log "getToday: #{dat}"
 			callback dat
 		return
 	return
 
 	
-root.getLastFiveDays = (req, shouldReduce, callback) ->
+root.getLastFiveDays = (req, callback) ->
 	usr = getUserFromSession(req)
 	usr = 'simon' if usr == undefined
-	options = {group: true, reduce: true} if shouldReduce
-	options = {reduce: false} if not shouldReduce
-	database.view 'activity/last_five_days',options, (err,dat) ->
+	ed = parseInt((makeMidnight()/86400000).toFixed(0))
+	sd = ed - 5
+	options = {startkey:[usr,sd], endkey:[usr,ed]} 
+	database.view 'activity/user-bynumericdate',options, (err,dat) ->
 		if err
+			console.log "getLastFiveDays error: #{JSON.stringify err}"
 			callback JSON.stringify err
 		else
-			# console.log dat
+			console.log "getLastFiveDays: #{dat}"
 			callback dat
 		return
 	return

@@ -21,12 +21,8 @@
 			"map": "function(doc) { if (doc.type == 'activity') emit([doc.user,doc.action.trim(),doc.category.trim()],null) }",
 			"reduce": "function(keys,values) { emit(null) }"
 		},
-		"today": {
-	       "map": "function(doc) { if (doc.type=='activity') { var millisperday = 86400000; var e = new Date(); e.setHours(0); e.setMinutes(0); e.setSeconds(0); e.setMilliseconds(0); var t=e.getTime(); var ts = parseInt(doc.updatedAt); if(ts > t) { emit([doc.category, doc.action],doc) }}}"
-	    },
-		"last_five_days": {
-	       "map": "function(doc) { if (doc.type=='activity') { var millisperday = 86400000; var e = new Date(); e.setHours(0); e.setMinutes(0); e.setSeconds(0); e.setMilliseconds(0); var t=e.getTime(); var s = t - (5 * millisperday); var ts = parseInt(doc.updatedAt); if(ts > s && ts < t) { emit([doc.category, doc.action],[doc.quantity,doc.units]) }}}",
-	       "reduce": "_count"
+	   "user-bynumericdate": {
+	       "map": "function(doc) { if(doc.type == 'activity') emit([doc.user, parseInt((parseInt(doc.updatedAt)/86400000).toFixed(0)),doc.category, doc.action, doc.quantity, doc.units],null)}"
 	   }
     }
 }
