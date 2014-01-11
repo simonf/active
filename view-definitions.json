@@ -23,6 +23,9 @@
 		},
 	   "user-bynumericdate": {
 	       "map": "function(doc) { if(doc.type == 'activity') emit([doc.user, parseInt((parseInt(doc.updatedAt)/86400000).toFixed(0)),doc.category, doc.action, doc.quantity, doc.units],null)}"
-	   }
+	    },
+		"moods_byuseranddate": {
+			"map": "function(doc) { if(doc.type == 'mood') emit([doc.user,doc.timestamp,doc.level],doc.level) }"
+		}
     }
 }

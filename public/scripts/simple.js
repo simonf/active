@@ -39,24 +39,34 @@
         user: o
       });
       posting.done(function(data) {
-        return callback(data);
+        callback(data);
       });
       posting.fail(function(data) {
-        return alert(data);
+        alert(data);
       });
     },
     getSuggestions: function(handleDataFunc) {
       var url;
       url = '/suggestions';
       $.get(url, function(dat) {
-        return handleDataFunc(dat);
+        handleDataFunc(dat);
       });
     },
-    saveMood: function(cnt) {
-      var url;
-      url = '/mood';
-      $.post('/mood', {
+    saveMood: function(cnt, callback) {
+      var posting;
+      posting = $.post('/mood', {
         mood: cnt
+      });
+      posting.done(function(data) {
+        callback(data);
+      });
+      posting.fail(function(data) {
+        alert(data);
+      });
+    },
+    getMood: function(lim, callback) {
+      jQuery.get("/mood?limit=" + lim, function(dat) {
+        callback(dat);
       });
     }
   };

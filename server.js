@@ -106,9 +106,13 @@
     });
   });
 
+  app.get('/mood', function(req, res) {
+    return db.getMoods(req, function(dat) {
+      return res.send(dat);
+    });
+  });
+
   app.post('/mood', function(req, res) {
-    console.log("Received: ");
-    console.log(req.body);
     return db.addMood(req, res);
   });
 

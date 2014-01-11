@@ -125,11 +125,45 @@
   };
 
   root.addMood = function(req, resp) {
-    var mood;
-    mood = req.body.mood;
-    if (mood !== void 0 && mood > 0) {
-      console.log("Saving: {mood: " + mood + "}");
+    var d, m, tosave, usr;
+    m = req.body.mood;
+    d = new Date().getTime();
+    usr = getUserFromSession(req);
+    if (m !== void 0 && m > 0) {
+      tosave = {
+        type: "mood",
+        user: usr,
+        level: m,
+        timestamp: d
+      };
+      console.log("Saving: " + tosave);
+      database.save(tosave, function(err, res) {
+        if (err) {
+          console.log(err);
+        } else {
+          resp.send(200);
+        }
+      });
     }
+  };
+
+  root.getMoods = function(req, callback) {
+    var options, usr;
+    usr = getUserFromSession(req);
+    if (usr === void 0) {
+      usr = 'simon';
+    }
+    options = {
+      startkey: [usr]
+    };
+    database.view('activity/moods_byuseranddate', options, function(err, dat) {
+      if (err) {
+        console.log("getMoods: " + (JSON.stringify(err)));
+        callback(JSON.stringify(err));
+      } else {
+        callback(dat);
+      }
+    });
   };
 
   doUpdate = function(activity, cb) {

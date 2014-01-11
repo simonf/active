@@ -98,17 +98,34 @@ root.addActivity = (req, resp) ->
 	return
 
 root.addMood = (req, resp) ->
-	mood = req.body.mood
-	if mood != undefined and mood > 0
-		console.log "Saving: {mood: #{mood}}"
-		# database.save(mood, (err,res) -> 
-		# 	if (err)
-		# 		console.log(err)
-		# 		return
-		# 	else 
-		# 		resp.send 200
-		# 		return
-		# )
+	m = req.body.mood
+	d = new Date().getTime()
+	usr = getUserFromSession(req)
+	if m != undefined and m > 0
+		tosave = {type: "mood", user: usr, level: m, timestamp: d}
+		console.log "Saving: #{tosave}"
+		database.save(tosave, (err,res) -> 
+			if (err)
+				console.log(err)
+				return
+			else 
+				resp.send 200
+				return
+		)
+	return
+
+root.getMoods =	(req, callback) ->
+	usr = getUserFromSession(req)
+	usr = 'simon' if usr == undefined
+	options = {startkey:[usr]}
+	database.view 'activity/moods_byuseranddate',options, (err,dat) ->
+		if err
+			console.log "getMoods: #{JSON.stringify err}"
+			callback JSON.stringify err
+		else
+#			console.log "getMoods: #{dat}"
+			callback dat
+		return
 	return
 
 doUpdate = (activity,cb) ->
@@ -148,19 +165,6 @@ root.getActivity = (id, resp) ->
 			resp.send dat
 		return
 	return
-
-# root.suggest = (req,resp) ->
-# 	usr = getUserFromSession(req)
-# 	options = {descending: true, startkey: [usr,{}], endkey: [usr], limit: 400} 
-# 	database.view 'activity/user-bydate', options, (err, dat) ->
-# 		if err
-# 			console.log err
-# 			resp.send JSON.stringify err
-# 		else
-# 			resp.send suggest.suggest dat
-# 		return
-# 	return
-# 
 	
 root.getPagedActivities = (req,resp) ->
 	usr = getUserFromSession(req)

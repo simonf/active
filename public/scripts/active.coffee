@@ -67,19 +67,15 @@ $ ->
 		n = parseInt(nm.substr(4,1))
 		cursel = $(el).hasClass('selected_star')
 		if cursel
-			remc="selected_star"
-			addc="empty_star"
 			for i in [1..5]
 				nm="div#star"+i
-				$(nm).addClass(addc)
-				$(nm).removeClass(remc)
+				$(nm).addClass("empty_star")
+				$(nm).removeClass("selected_star")
 		else
-			remc="empty_star" 
-			addc="selected_star"
 			for i in [1..n]
 				nm="div#star"+i
-				$(nm).addClass(addc)
-				$(nm).removeClass(remc)
+				$(nm).addClass("selected_star")
+				$(nm).removeClass("empty_star")
 		return
 
 
@@ -87,7 +83,16 @@ $ ->
 		cnt = 0
 		$('div.mood_img').each (ndx) ->
 			cnt += 1 if $(this).hasClass('selected_star')
-		SimpleClient.saveMood cnt
+		SimpleClient.saveMood cnt, (data) ->
+			if not parseInt(data) is 200 and not data is "OK"
+				alert data
+			else
+				for i in [1..5]
+					nm="div#star"+i
+					$(nm).addClass("empty_star")
+					$(nm).removeClass("selected_star")
+			return
+		return
 
 	$('button#calc-daily').on 'click', (e) ->
 		DoBulk.showSuggestions()
@@ -113,3 +118,7 @@ $ ->
 	$('#ts-in').datepicker({ dateFormat: "yy-mm-dd" })
 	# Set initial focus to the first field in the form
 	$('#action-in').focus()
+	SimpleClient.getMood 300, (dat) ->
+		for d in dat 
+			nm = "<img class='mooddatum' src='/public/img/#{d.value}.png'>"
+			$("#recentmood").append(nm)

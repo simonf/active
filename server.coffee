@@ -92,10 +92,15 @@ app.get '/suggestions', (req,res) ->
 app.get '/today', (req,res) ->
 	db.getToday req, (dat) ->
 		res.send dat
-		
+
+#Moods		
+app.get '/mood', (req,res) ->
+	db.getMoods req, (dat) ->
+		res.send dat
+
 app.post '/mood', (req,res) ->
-	console.log "Received: "
-	console.log req.body
+#	console.log "Received: "
+#	console.log req.body
 	db.addMood req,res
 
 #Check login username

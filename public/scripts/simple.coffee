@@ -19,19 +19,34 @@ root.SimpleClient = {
 		posting = $.post('/activities',{ action: a, category: c, quantity: q, units: u, updatedAt: t, user: o },)
 		posting.done (data) ->
 			callback data
+			return
 		posting.fail (data) ->
 			alert data
+			return
 		return
 	,
 	getSuggestions: (handleDataFunc) ->
 		url='/suggestions'
 		$.get url,(dat) ->
 			handleDataFunc(dat)
+			return
 		return
 	,
-	saveMood: (cnt) ->
-		url='/mood'
-		$.post('/mood',{mood: cnt})
+	saveMood: (cnt, callback) ->
+		posting = $.post('/mood',{mood: cnt})
+		posting.done (data) ->
+			callback data
+			return
+		posting.fail (data) ->
+			alert data
+			return
 		return
+	,
+	getMood: (lim, callback) ->
+		jQuery.get "/mood?limit=#{lim}", (dat) ->
+			callback dat
+			return
+		return
+
 }
 
