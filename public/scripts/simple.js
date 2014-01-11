@@ -28,8 +28,9 @@
         return handleDataFunc(dat);
       });
     },
-    postNewActivity: function(a, c, q, u, t, o) {
-      $.post('/activities', {
+    postNewActivity: function(a, c, q, u, t, o, callback) {
+      var posting;
+      posting = $.post('/activities', {
         action: a,
         category: c,
         quantity: q,
@@ -37,12 +38,25 @@
         updatedAt: t,
         user: o
       });
+      posting.done(function(data) {
+        return callback(data);
+      });
+      posting.fail(function(data) {
+        return alert(data);
+      });
     },
     getSuggestions: function(handleDataFunc) {
       var url;
       url = '/suggestions';
       $.get(url, function(dat) {
         return handleDataFunc(dat);
+      });
+    },
+    saveMood: function(cnt) {
+      var url;
+      url = '/mood';
+      $.post('/mood', {
+        mood: cnt
       });
     }
   };

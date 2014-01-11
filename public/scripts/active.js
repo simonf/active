@@ -80,6 +80,40 @@
     $('span#bulk_close').on('click', function() {
       $('div#bulk_entry').hide();
     });
+    $('div.mood_img').on('click', function(e) {
+      var addc, cursel, el, i, n, nm, remc, _i, _j;
+      el = e.currentTarget;
+      nm = el.attributes["id"].value;
+      n = parseInt(nm.substr(4, 1));
+      cursel = $(el).hasClass('selected_star');
+      if (cursel) {
+        remc = "selected_star";
+        addc = "empty_star";
+        for (i = _i = 1; _i <= 5; i = ++_i) {
+          nm = "div#star" + i;
+          $(nm).addClass(addc);
+          $(nm).removeClass(remc);
+        }
+      } else {
+        remc = "empty_star";
+        addc = "selected_star";
+        for (i = _j = 1; 1 <= n ? _j <= n : _j >= n; i = 1 <= n ? ++_j : --_j) {
+          nm = "div#star" + i;
+          $(nm).addClass(addc);
+          $(nm).removeClass(remc);
+        }
+      }
+    });
+    $('button#mood_submit').on('click', function(e) {
+      var cnt;
+      cnt = 0;
+      $('div.mood_img').each(function(ndx) {
+        if ($(this).hasClass('selected_star')) {
+          return cnt += 1;
+        }
+      });
+      return SimpleClient.saveMood(cnt);
+    });
     $('button#calc-daily').on('click', function(e) {
       DoBulk.showSuggestions();
     });

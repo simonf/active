@@ -23,15 +23,17 @@ root.DoBulk = {
 			o = CookieChecker.getUserName()
 			r=SFUtils.splitNumbersAndUnits n
 			# alert "#{c},#{a},#{r.num},#{r.units}"
-			SimpleClient.postNewActivity a,c,r.num,r.units,t,o
-			$('#table-body').prepend DoBulk.makeVisibleRow a,c,r,t
+			SimpleClient.postNewActivity a,c,r.num,r.units,t,o, (data) ->
+				console.log(data)
+				$('#table-body').prepend DoBulk.makeVisibleRow a,c,r,t,data
+				return
 			return
 		$('table#bulk_table tbody').empty()
 		$('div#bulk_entry').hide()
-		location.reload(true);
+		#location.reload(true);
 		return
 	,
-	makeVisibleRow: (a,c,r,t) ->
+	makeVisibleRow: (a,c,r,t,id) ->
 		d = new Date(parseInt(t)).toString('d-MMM-yy HH:mm')
-		return "<span class='col_activity tb-bg'>#{a}&nbsp;</span><span class='col_category tb-bg'>#{c}&nbsp;</span><span class='col_quantity tb-bg'>#{r.num}&nbsp;#{r.units}</span><span class='col_timestamp tb-bg'>#{d}</span><span class='col_buttons'>n/a</span>"
+		return "<span class='col_activity tb-bg'>#{a}&nbsp;</span><span class='col_category tb-bg'>#{c}&nbsp;</span><span class='col_quantity tb-bg'>#{r.num}&nbsp;#{r.units}</span><span class='col_timestamp tb-bg'>#{d}</span><span class='col_buttons'><a href='#' class='item-delete' data-id='#{id}'><img id='del-img' src='img/cross_48.png'/></a></span>"
 }

@@ -110,6 +110,8 @@
       if (activity.user === void 0) {
         activity.user = 'simon';
       }
+      console.log("Saving:");
+      console.log(activity);
       database.save(activity, function(err, res) {
         if (err) {
           console.log(err);
@@ -119,6 +121,14 @@
           });
         }
       });
+    }
+  };
+
+  root.addMood = function(req, resp) {
+    var mood;
+    mood = req.body.mood;
+    if (mood !== void 0 && mood > 0) {
+      console.log("Saving: {mood: " + mood + "}");
     }
   };
 

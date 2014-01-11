@@ -30,17 +30,18 @@
         n = $(el).parent().parent().find('td input.bqty_in').val();
         o = CookieChecker.getUserName();
         r = SFUtils.splitNumbersAndUnits(n);
-        SimpleClient.postNewActivity(a, c, r.num, r.units, t, o);
-        $('#table-body').prepend(DoBulk.makeVisibleRow(a, c, r, t));
+        SimpleClient.postNewActivity(a, c, r.num, r.units, t, o, function(data) {
+          console.log(data);
+          $('#table-body').prepend(DoBulk.makeVisibleRow(a, c, r, t, data));
+        });
       });
       $('table#bulk_table tbody').empty();
       $('div#bulk_entry').hide();
-      location.reload(true);
     },
-    makeVisibleRow: function(a, c, r, t) {
+    makeVisibleRow: function(a, c, r, t, id) {
       var d;
       d = new Date(parseInt(t)).toString('d-MMM-yy HH:mm');
-      return "<span class='col_activity tb-bg'>" + a + "&nbsp;</span><span class='col_category tb-bg'>" + c + "&nbsp;</span><span class='col_quantity tb-bg'>" + r.num + "&nbsp;" + r.units + "</span><span class='col_timestamp tb-bg'>" + d + "</span><span class='col_buttons'>n/a</span>";
+      return "<span class='col_activity tb-bg'>" + a + "&nbsp;</span><span class='col_category tb-bg'>" + c + "&nbsp;</span><span class='col_quantity tb-bg'>" + r.num + "&nbsp;" + r.units + "</span><span class='col_timestamp tb-bg'>" + d + "</span><span class='col_buttons'><a href='#' class='item-delete' data-id='" + id + "'><img id='del-img' src='img/cross_48.png'/></a></span>";
     }
   };
 

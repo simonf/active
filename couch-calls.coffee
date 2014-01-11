@@ -85,8 +85,8 @@ root.addActivity = (req, resp) ->
 	activity = formatter.parseAndFixActivity activity
 	if activity.action != undefined and activity.action.length > 0
 		activity.user = 'simon' if activity.user == undefined
-		# console.log "Saving:"
-		# console.log activity
+		console.log "Saving:"
+		console.log activity
 		database.save(activity, (err,res) -> 
 			if (err)
 				console.log(err)
@@ -97,6 +97,19 @@ root.addActivity = (req, resp) ->
 		)
 	return
 
+root.addMood = (req, resp) ->
+	mood = req.body.mood
+	if mood != undefined and mood > 0
+		console.log "Saving: {mood: #{mood}}"
+		# database.save(mood, (err,res) -> 
+		# 	if (err)
+		# 		console.log(err)
+		# 		return
+		# 	else 
+		# 		resp.send 200
+		# 		return
+		# )
+	return
 
 doUpdate = (activity,cb) ->
 	id = activity.id

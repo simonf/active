@@ -60,6 +60,34 @@ $ ->
 	$('span#bulk_close').on 'click', ->
 		$('div#bulk_entry').hide()
 		return
+	
+	$('div.mood_img').on 'click', (e) ->
+		el = e.currentTarget
+		nm = el.attributes["id"].value
+		n = parseInt(nm.substr(4,1))
+		cursel = $(el).hasClass('selected_star')
+		if cursel
+			remc="selected_star"
+			addc="empty_star"
+			for i in [1..5]
+				nm="div#star"+i
+				$(nm).addClass(addc)
+				$(nm).removeClass(remc)
+		else
+			remc="empty_star" 
+			addc="selected_star"
+			for i in [1..n]
+				nm="div#star"+i
+				$(nm).addClass(addc)
+				$(nm).removeClass(remc)
+		return
+
+
+	$('button#mood_submit').on 'click', (e) ->
+		cnt = 0
+		$('div.mood_img').each (ndx) ->
+			cnt += 1 if $(this).hasClass('selected_star')
+		SimpleClient.saveMood cnt
 
 	$('button#calc-daily').on 'click', (e) ->
 		DoBulk.showSuggestions()

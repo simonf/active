@@ -75,7 +75,6 @@
   });
 
   app.post('/activities', function(req, res) {
-    console.log("Received: ");
     return db.addActivity(req, res);
   });
 
@@ -105,6 +104,12 @@
     return db.getToday(req, function(dat) {
       return res.send(dat);
     });
+  });
+
+  app.post('/mood', function(req, res) {
+    console.log("Received: ");
+    console.log(req.body);
+    return db.addMood(req, res);
   });
 
   app.get('/check_un/:un', function(req, res) {

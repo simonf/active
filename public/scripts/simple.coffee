@@ -15,14 +15,23 @@ root.SimpleClient = {
 			handleDataFunc(dat)
 		return
 	,
-	postNewActivity: (a, c, q, u, t, o) ->
-		$.post('/activities',{ action: a, category: c, quantity: q, units: u, updatedAt: t, user: o })
+	postNewActivity: (a, c, q, u, t, o, callback) ->
+		posting = $.post('/activities',{ action: a, category: c, quantity: q, units: u, updatedAt: t, user: o },)
+		posting.done (data) ->
+			callback data
+		posting.fail (data) ->
+			alert data
 		return
 	,
 	getSuggestions: (handleDataFunc) ->
 		url='/suggestions'
 		$.get url,(dat) ->
 			handleDataFunc(dat)
+		return
+	,
+	saveMood: (cnt) ->
+		url='/mood'
+		$.post('/mood',{mood: cnt})
 		return
 }
 

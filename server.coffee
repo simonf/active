@@ -61,7 +61,7 @@ app.get '/activities/:id', (req, res) ->
 
 #Create an activity
 app.post '/activities', (req,res) ->
-	console.log "Received: "
+	# console.log "Received: "
 	#console.log req.body
 	db.addActivity req,res
 
@@ -92,6 +92,11 @@ app.get '/suggestions', (req,res) ->
 app.get '/today', (req,res) ->
 	db.getToday req, (dat) ->
 		res.send dat
+		
+app.post '/mood', (req,res) ->
+	console.log "Received: "
+	console.log req.body
+	db.addMood req,res
 
 #Check login username
 app.get '/check_un/:un', (req,res) ->
