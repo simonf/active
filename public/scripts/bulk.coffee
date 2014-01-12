@@ -15,6 +15,7 @@ root.DoBulk = {
 		"<tr><td><input type='text' value='#{item.category}' class='bcat_in'></td><td><input type='text' value='#{item.action}' class='bact_in'></td><td><input type='text' value='#{item.quantity} #{item.units}' class='bqty_in'></td><td><input type='checkbox' value='' class='bdo_in'/></td></tr>"
 	,
 	saveSuggestions: ->
+		loc = SFUtils.currentLocation
 		$('.bdo_in:checked').each (index,el) ->
 			t = new Date().getTime().toString()
 			c = $(el).parent().parent().find('td input.bcat_in').val();
@@ -23,7 +24,7 @@ root.DoBulk = {
 			o = CookieChecker.getUserName()
 			r=SFUtils.splitNumbersAndUnits n
 			# alert "#{c},#{a},#{r.num},#{r.units}"
-			SimpleClient.postNewActivity a,c,r.num,r.units,t,o, (data) ->
+			SimpleClient.postNewActivity a,c,r.num,r.units,t,o, loc, (data) ->
 				console.log(data)
 				$('#table-body').prepend DoBulk.makeVisibleRow a,c,r,t,data
 				return

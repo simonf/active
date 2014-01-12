@@ -22,6 +22,8 @@
       return "<tr><td><input type='text' value='" + item.category + "' class='bcat_in'></td><td><input type='text' value='" + item.action + "' class='bact_in'></td><td><input type='text' value='" + item.quantity + " " + item.units + "' class='bqty_in'></td><td><input type='checkbox' value='' class='bdo_in'/></td></tr>";
     },
     saveSuggestions: function() {
+      var loc;
+      loc = SFUtils.currentLocation;
       $('.bdo_in:checked').each(function(index, el) {
         var a, c, n, o, r, t;
         t = new Date().getTime().toString();
@@ -30,7 +32,7 @@
         n = $(el).parent().parent().find('td input.bqty_in').val();
         o = CookieChecker.getUserName();
         r = SFUtils.splitNumbersAndUnits(n);
-        SimpleClient.postNewActivity(a, c, r.num, r.units, t, o, function(data) {
+        SimpleClient.postNewActivity(a, c, r.num, r.units, t, o, loc, function(data) {
           console.log(data);
           $('#table-body').prepend(DoBulk.makeVisibleRow(a, c, r, t, data));
         });

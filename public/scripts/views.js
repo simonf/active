@@ -125,6 +125,9 @@
           }
         }
         this.clearInput();
+        item.set({
+          location: SFUtils.currentLocation
+        });
         return item;
       } else {
         return null;

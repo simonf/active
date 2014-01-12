@@ -5,6 +5,7 @@
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
 
   root.SFUtils = {
+    currentLocation: null,
     splitNumbersAndUnits: function(anInput) {
       var arr, myInput, parsedNumber;
       if (anInput) {
@@ -174,6 +175,29 @@
         }
       }
       return maxEl;
+    },
+    rememberLocation: function() {
+      return SFUtils.calcLocation(function(loc) {
+        return SFUtils.currentLocation = loc;
+      });
+    },
+    calcLocation: function(callback) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((function(position) {
+          return callback(position.coords.latitude + "," + position.coords.longitude);
+        }), (function(error) {
+          if (error.code === error.PERMISSION_DENIED) {
+            console.log("User denied the request for Geolocation.");
+          } else if (error.code === error.POSITION_UNAVAILABLE) {
+            console.log("Location information is unavailable.");
+          } else if (error.code = error.TIMEOUT) {
+            console.log("The request to get user location timed out.");
+          } else {
+            console.log("An unknown error occurred.");
+          }
+          return callback(null);
+        }));
+      }
     }
   };
 

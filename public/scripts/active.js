@@ -144,7 +144,7 @@
       dateFormat: "yy-mm-dd"
     });
     $('#action-in').focus();
-    return SimpleClient.getMood(300, function(dat) {
+    SimpleClient.getMood(300, function(dat) {
       var d, nm, _i, _len, _results;
       _results = [];
       for (_i = 0, _len = dat.length; _i < _len; _i++) {
@@ -154,6 +154,7 @@
       }
       return _results;
     });
+    return SFUtils.rememberLocation();
   });
 
 }).call(this);

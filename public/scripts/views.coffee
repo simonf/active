@@ -142,6 +142,7 @@ root.ListView = Backbone.View.extend {
 					ds = $.datepicker.parseDate("yy-mm-dd",explicitDate)
 					item.set {updatedAt: ds.getTime().toString()}
 			this.clearInput()
+			item.set {location: SFUtils.currentLocation}
 			return item
 		else
 			return null

@@ -118,7 +118,10 @@ $ ->
 	$('#ts-in').datepicker({ dateFormat: "yy-mm-dd" })
 	# Set initial focus to the first field in the form
 	$('#action-in').focus()
+	
 	SimpleClient.getMood 300, (dat) ->
 		for d in dat 
 			nm = "<img class='mooddatum' src='/public/img/#{d.value}.png'>"
 			$("#recentmood").append(nm)
+
+	SFUtils.rememberLocation()

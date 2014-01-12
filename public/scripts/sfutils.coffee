@@ -2,6 +2,8 @@ root = exports ? this
 
 root.SFUtils = {
 
+	currentLocation : null,
+	
 	splitNumbersAndUnits : (anInput) ->		
 		if anInput 
 			myInput = anInput.trim()
@@ -146,9 +148,30 @@ root.SFUtils = {
 				maxEl = num
 				maxCnt = hash[ns]
 		return maxEl
+	,
 	
-};
+	rememberLocation: ->
+		SFUtils.calcLocation (loc) ->
+			SFUtils.currentLocation = loc
+	,
+	
+	calcLocation: (callback) ->
+		if navigator.geolocation
+			navigator.geolocation.getCurrentPosition \
+				( (position) -> callback position.coords.latitude + "," + position.coords.longitude ) ,\
+				( (error) ->
+					if error.code is error.PERMISSION_DENIED
+						console.log "User denied the request for Geolocation."
+					else if error.code is error.POSITION_UNAVAILABLE
+						console.log "Location information is unavailable."
+					else if error.code = error.TIMEOUT
+						console.log "The request to get user location timed out."
+					else console.log "An unknown error occurred."
+					callback null
+				) 
+		return
 
+};
 
 
 #  var tests=["    3.4   hours ", "1minute", "50.0secs  ", "    03:00:00","1"];

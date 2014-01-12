@@ -28,7 +28,7 @@
         return handleDataFunc(dat);
       });
     },
-    postNewActivity: function(a, c, q, u, t, o, callback) {
+    postNewActivity: function(a, c, q, u, t, o, loc, callback) {
       var posting;
       posting = $.post('/activities', {
         action: a,
@@ -36,7 +36,8 @@
         quantity: q,
         units: u,
         updatedAt: t,
-        user: o
+        user: o,
+        location: loc
       });
       posting.done(function(data) {
         callback(data);
