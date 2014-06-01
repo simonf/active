@@ -122,13 +122,13 @@ root.ListView = Backbone.View.extend {
 	getItemFromForm: ->
 		item = new Item()
 		#parse input field for quantity and units
-		qu = SFUtils.splitNumbersAndUnits SFUtils.escapeHTML $('#quantity-in').val()
+		qu = SFUtils.splitNumbersAndUnits $('#quantity-in').val()
 		inputaction = SFUtils.escapeHTML $('#action-in').val()
 		# We must have an action, even if nothing else.
 		if inputaction
 			item.set {
 				action: inputaction,
-				category: SFUtils.escapeHTML $('#category-in').val(),
+				category: SFUtils.escapeHTML($('#category-in').val()),
 				quantity: qu.num,
 				units: qu.units,
 				user: CookieChecker.getUserName()
