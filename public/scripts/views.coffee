@@ -122,13 +122,13 @@ root.ListView = Backbone.View.extend {
 	getItemFromForm: ->
 		item = new Item()
 		#parse input field for quantity and units
-		qu = SFUtils.splitNumbersAndUnits $('#quantity-in').val()
-		inputaction = $('#action-in').val()
+		qu = SFUtils.splitNumbersAndUnits SFUtils.escapeHTML $('#quantity-in').val()
+		inputaction = SFUtils.escapeHTML $('#action-in').val()
 		# We must have an action, even if nothing else.
 		if inputaction
 			item.set {
 				action: inputaction,
-				category: $('#category-in').val(),
+				category: SFUtils.escapeHTML $('#category-in').val(),
 				quantity: qu.num,
 				units: qu.units,
 				user: CookieChecker.getUserName()
@@ -137,7 +137,7 @@ root.ListView = Backbone.View.extend {
 			if $('#yesterday-in').is(':checked')
 				item.set {updatedAt: SFUtils.yesterdayTimestamp()}
 			else
-				explicitDate = $('#ts-in').val()
+				explicitDate = SFUtils.escapeHTML $('#ts-in').val()
 				if explicitDate
 					ds = $.datepicker.parseDate("yy-mm-dd",explicitDate)
 					item.set {updatedAt: ds.getTime().toString()}

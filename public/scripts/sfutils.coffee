@@ -171,6 +171,11 @@ root.SFUtils = {
 				) 
 		return
 
+	,
+
+	escapeHTML: (s) ->
+        String(s).replace(/&(?!\w+;)/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+
 };
 
 
