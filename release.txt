@@ -4,6 +4,7 @@
 ./formatter.js
 ./n3.js
 ./server.js
+./package.json
 ./view-definitions.json
 ./public/charts.html
 ./public/entry.html
