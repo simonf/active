@@ -1,0 +1,15 @@
+{
+  "name": "activity",
+  "description": "Tracks activities",
+  "author": "simonf",
+  "dependencies": {
+    "cookies": "0.3.x",
+    "express": "3.4.x",
+    "cradle": "0.6.x",
+    "validator-js": "0.2.x"
+  },
+  "devDependencies": {
+  },
+  "engine": "node >= 0.10.25"
+}
+
