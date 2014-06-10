@@ -2,7 +2,7 @@
 (function() {
   var convertToTimestamp, root, sanitizeData, validator;
 
-  validator = require('validator-js');
+  validator = require('validator');
 
   root = typeof exports !== "undefined" && exports !== null ? exports : this;
 
@@ -33,17 +33,17 @@
     if (activity.action != null) {
       activity.action = validator.escape(activity.action);
     }
-    if (activity.action != null) {
-      activity.category = validator.escape(activity.action);
+    if (activity.category != null) {
+      activity.category = validator.escape(activity.category);
     }
-    if (activity.action != null) {
-      activity.updatedAt = validator.escape(activity.action);
+    if (activity.updatedAt != null) {
+      activity.updatedAt = validator.escape(activity.updatedAt);
     }
-    if (activity.action != null) {
-      activity.units = validator.escape(activity.action);
+    if (activity.units != null) {
+      activity.units = validator.escape(activity.units);
     }
-    if (activity.action != null) {
-      activity.quantity = validator.escape(activity.action);
+    if (activity.quantity != null) {
+      activity.quantity = validator.escape(activity.quantity);
     }
     return activity;
   };

@@ -1,4 +1,4 @@
-validator = require 'validator-js'
+validator = require 'validator'
 
 root = exports ? this
 
@@ -20,10 +20,10 @@ root.parseAndFixActivity = (input) ->
 
 sanitizeData = (activity) ->
 	activity.action = validator.escape(activity.action) if activity.action?
-	activity.category = validator.escape(activity.action) if activity.action?
-	activity.updatedAt = validator.escape(activity.action) if activity.action?
-	activity.units = validator.escape(activity.action) if activity.action?
-	activity.quantity = validator.escape(activity.action) if activity.action?
+	activity.category = validator.escape(activity.category) if activity.category?
+	activity.updatedAt = validator.escape(activity.updatedAt) if activity.updatedAt?
+	activity.units = validator.escape(activity.units) if activity.units?
+	activity.quantity = validator.escape(activity.quantity) if activity.quantity?
 	return activity
 
 convertToTimestamp = (strdt) ->
