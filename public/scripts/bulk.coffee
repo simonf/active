@@ -5,6 +5,7 @@ root.DoBulk = {
 		SimpleClient.getSuggestions (data) ->
 			if data.length > 0
 				$('div#bulk_entry').show()
+				$('table#bulk_table tbody').empty()
 				$('table#bulk_table tbody').append('<form>')
 				for item in data
 					$('table#bulk_table tbody').append DoBulk.makeSuggestionRow item

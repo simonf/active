@@ -10,6 +10,7 @@
         var item, _i, _len;
         if (data.length > 0) {
           $('div#bulk_entry').show();
+          $('table#bulk_table tbody').empty();
           $('table#bulk_table tbody').append('<form>');
           for (_i = 0, _len = data.length; _i < _len; _i++) {
             item = data[_i];
