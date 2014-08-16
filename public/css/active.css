@@ -44,7 +44,7 @@ header {
     font-size: 48px;
     line-height: 90px;
     color: #a66100;
-    display: inline;
+    float: left;
     margin-left: 0.5em; }
   header h2 {
     color: #fff; }
@@ -69,6 +69,9 @@ header {
           font-weight: bold;
           color: #a66100; }
 
+div#main {
+  clear: left; }
+
 label {
   display: inline-block;
   width: 80px;
@@ -80,7 +83,7 @@ label {
   color: white; }
 
 #action-in {
-  width: 79%; }
+  width: 60%; }
 
 #category-in {
   width: 60%; }
