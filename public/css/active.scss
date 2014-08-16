@@ -34,6 +34,12 @@
 			width: 20px;
 		}
 	}
+	
+	div#top {
+		margin: 0px;
+		padding: 0px;
+		border: 0px;
+	}
 
 	div#content {
 		font-family: Verdana, Geneva, sans-serif;
@@ -56,7 +62,7 @@
 	 	h1 {
 			font-family: Times New Roman, serif;
 			font-size: 48px;
-			line-height: 90px;
+			//line-height: 90px;
 			color: $dark-brown;
 			float: left;
 			margin-left: 0.5em;
